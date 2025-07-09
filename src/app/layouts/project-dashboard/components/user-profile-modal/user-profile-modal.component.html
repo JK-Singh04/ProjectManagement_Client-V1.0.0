@@ -1,0 +1,422 @@
+<div class="modal-container">
+  <!-- Fixed Tabs Header -->
+  <div class="modal-tabs-header">
+    <nz-tabset
+      [(nzSelectedIndex)]="selectedTabIndex"
+      (nzSelectedIndexChange)="onTabChange($event)"
+    >
+      <nz-tab nzTitle="Profile Info"></nz-tab>
+      <nz-tab nzTitle="Manage Access"></nz-tab>
+      <nz-tab nzTitle="Preferences"></nz-tab>
+      <nz-tab nzTitle="Security"></nz-tab>
+    </nz-tabset>
+  </div>
+
+  <!-- Scrollable Tab Content -->
+  <div class="modal-content">
+    <!-- Profile Info Tab -->
+    <ng-container *ngIf="selectedTabIndex === 0">
+      <!-- Progress Bar -->
+
+      <!-- Tooltips for each step title -->
+      <ng-template
+        *ngFor="let field of stepFields; let i = index"
+        let-index="i"
+        #stepTooltipTemplates
+      >
+        <ng-template #stepTitle>
+          <span
+            nz-tooltip
+            [nzTooltipTitle]="
+              stepStatus[i]
+                ? 'Step ' + (i + 1) + ' complete'
+                : 'Step ' + (i + 1) + ' in progress'
+            "
+          >
+            {{ fieldDisplayNames[field] }}
+          </span>
+        </ng-template>
+      </ng-template>
+
+      <div class="profile-progress">
+        <nz-steps
+          size="small"
+          [nzCurrent]="progressStage"
+          (nzIndexChange)="onStepClick($event)"
+        >
+          <ng-template #stepTitle0>
+            <span
+              nz-tooltip
+              [nzTooltipTitle]="
+                stepStatus[0] ? 'Username Entered' : 'Enter Username'
+              "
+            >
+              {{ fieldDisplayNames["fullName"] }}
+            </span>
+          </ng-template>
+
+          <ng-template #stepTitle1>
+            <span
+              nz-tooltip
+              [nzTooltipTitle]="stepStatus[1] ? 'Email Entered' : 'Enter Email'"
+            >
+              {{ fieldDisplayNames["email"] }}
+            </span>
+          </ng-template>
+          <ng-template #stepTitle2>
+            <span
+              nz-tooltip
+              [nzTooltipTitle]="
+                hasProjectRoles
+                  ? 'Project Role Assigned'
+                  : 'Missing Project Role'
+              "
+            >
+              Project Role
+            </span>
+          </ng-template>
+          <ng-template #stepTitle3>
+            <span
+              nz-tooltip
+              [nzTooltipTitle]="hasTeams ? 'Team Assigned' : 'Missing Team'"
+            >
+              Team
+            </span>
+          </ng-template>
+
+          <nz-step
+            [nzStatus]="stepStatus[0] ? 'finish' : 'process'"
+            [nzTitle]="stepTitle0"
+          ></nz-step>
+          <nz-step
+            [nzStatus]="stepStatus[1] ? 'finish' : 'process'"
+            [nzTitle]="stepTitle1"
+          ></nz-step>
+          <nz-step
+            [nzStatus]="hasProjectRoles ? 'finish' : 'wait'"
+            [nzTitle]="stepTitle2"
+          ></nz-step>
+          <nz-step
+            [nzStatus]="hasTeams ? 'finish' : 'wait'"
+            [nzTitle]="stepTitle3"
+          ></nz-step>
+
+          <!-- Final Done Step -->
+          <ng-template #doneTitle>
+            <span
+              nz-tooltip
+              [nzTooltipTitle]="
+                isFormComplete()
+                  ? 'All steps completed!'
+                  : 'Incomplete step remaining'
+              "
+            >
+              Done
+            </span>
+          </ng-template>
+
+          <nz-step
+            [nzTitle]="doneTitle"
+            [nzStatus]="isFormComplete() ? 'finish' : 'wait'"
+          >
+          </nz-step>
+        </nz-steps>
+      </div>
+
+      <div class="avatar-section flex gap-6">
+        <!-- Left side: Avatar + Upload button vertically aligned -->
+        <div class="avatar-upload flex flex-col items-center">
+          <div class="avatar-container">
+            <ng-container *ngIf="!avatarUrl">
+              <div class="avatar-placeholder">
+                <nz-icon nzType="user" nzTheme="outline"></nz-icon>
+              </div>
+            </ng-container>
+            <img *ngIf="avatarUrl" [src]="avatarUrl" class="avatar-img" />
+            <span class="edit-icon">
+              <nz-icon nzType="edit" nzTheme="outline"></nz-icon>
+            </span>
+          </div>
+
+          <!-- Upload component -->
+          <nz-upload
+            [nzShowUploadList]="false"
+            [nzBeforeUpload]="beforeUpload"
+            [nzCustomRequest]="customUpload"
+            [nzFileList]="[]"
+            [nzMultiple]="false"
+            nzOpenFileDialogOnClick="true"
+          >
+            <button nz-button nzType="dashed" type="button">
+              <nz-icon nzType="upload"></nz-icon>
+              <span>Upload Photo</span>
+            </button>
+          </nz-upload>
+
+          <button
+            nz-button
+            nzType="default"
+            nzDanger
+            class="mt-2"
+            [disabled]="!avatarUrl"
+            (click)="deleteProfileImage()"
+          >
+            <nz-icon nzType="delete"></nz-icon>
+            Delete Photo
+          </button>
+        </div>
+
+        <!-- Right side: Upload info -->
+        <div class="upload-info">
+          <h3 class="upload-title">Choose a profile image</h3>
+          <p class="upload-subtitle">
+            Choose a high-quality photo to help teammates recognize you.
+          </p>
+          <p class="upload-format">
+            Recommended aspect ratio 1:1
+            <br />
+            JPG or PNG (Maximum: 2MB)
+          </p>
+        </div>
+      </div>
+      <form nz-form [formGroup]="userProfile" nzLayout="vertical" class="mt-4">
+        <nz-form-item>
+          <nz-form-label
+            [nzSm]="6"
+            [nzXs]="24"
+            [nzRequired]="true"
+            nzFor="fullName"
+            >Username:</nz-form-label
+          >
+          <nz-form-control
+            [nzSm]="14"
+            [nzXs]="24"
+            nzErrorTip="Please input Username!"
+          >
+            <input
+              nz-input
+              id="fullName"
+              formControlName="fullName"
+              placeholder="Username"
+            />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label
+            [nzSm]="6"
+            [nzXs]="24"
+            [nzRequired]="true"
+            nzFor="email"
+            >E-mail:</nz-form-label
+          >
+          <nz-form-control
+            [nzSm]="14"
+            [nzXs]="24"
+            nzErrorTip="Please input a valid E-mail!"
+          >
+            <input
+              nz-input
+              formControlName="email"
+              id="email"
+              placeholder="xyz@gmail.com"
+            />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="gender"
+            >Gender:</nz-form-label
+          >
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-select
+              formControlName="gender"
+              name="gender"
+              nzPlaceHolder="Select Gender"
+            >
+              <nz-option nzValue="male" nzLabel="Male"></nz-option>
+              <nz-option nzValue="female" nzLabel="Female"></nz-option>
+              <nz-option nzValue="other" nzLabel="Other"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="dob"
+            >Date of Birth:</nz-form-label
+          >
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-date-picker
+              [nzFormat]="dateFormat"
+              formControlName="dob"
+              name="dob"
+            ></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Project Roles -->
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24">Project Roles:</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-select
+              formControlName="projectRoles"
+              nzMode="multiple"
+              [nzShowSearch]="true"
+              [nzAllowClear]="true"
+              [nzAutoClearSearchValue]="true"
+              nzPlaceHolder="Select or add project roles"
+              style="width: 100%"
+            >
+              <nz-option
+                *ngFor="let role of availableProjectRoles"
+                [nzValue]="role"
+                [nzLabel]="role"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Teams -->
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24">Teams:</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-select
+              formControlName="teams"
+              nzMode="multiple"
+              [nzShowSearch]="true"
+              [nzAllowClear]="true"
+              [nzAutoClearSearchValue]="true"
+              nzPlaceHolder="Select or add teams"
+              style="width: 100%"
+            >
+              <nz-option
+                *ngFor="let team of availableTeams"
+                [nzValue]="team"
+                [nzLabel]="team"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </ng-container>
+
+    <!-- Manage Access Tab -->
+    <ng-container *ngIf="selectedTabIndex === 1">
+        <div class="manage-access-section">
+          <h3>Project Access</h3>
+          <ng-container *ngFor="let project of manageAccessData.projects">
+            <nz-collapse>
+              <nz-collapse-panel [nzHeader]="project.projectName">
+                <table class="access-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Joined At</th>
+                      <th>Role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let member of project.members">
+                      <td>{{ member.userName }}</td>
+                      <td>{{ member.joinedAt | date : "shortDate" }}</td>
+                      <td>
+                        <nz-select
+                          [(ngModel)]="member.role"
+                          [nzDisabled]="member.isSaving"
+                          (ngModelChange)="
+                            updateMemberRole(
+                              'project',
+                              project.projectName,
+                              member,
+                              $event
+                            )
+                          "
+                        >
+                          <nz-option
+                            *ngFor="let role of roleOptions"
+                            [nzValue]="role"
+                            [nzLabel]="role"
+                          ></nz-option>
+                        </nz-select>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </nz-collapse-panel>
+            </nz-collapse>
+          </ng-container>
+
+          <h3 class="mt-6">Team Access</h3>
+          <ng-container *ngFor="let team of manageAccessData.teams">
+            <nz-collapse>
+              <nz-collapse-panel [nzHeader]="team.teamName">
+                <table class="access-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Joined At</th>
+                      <th>Role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let member of team.members">
+                      <td>{{ member.userName }}</td>
+                      <td>{{ member.joinedAt | date : "shortDate" }}</td>
+                      <td>
+                        <nz-select
+                          [(ngModel)]="member.role"
+                          [nzDisabled]="member.isSaving"
+                          (ngModelChange)="
+                            updateMemberRole(
+                              'team',
+                              team.teamName,
+                              member,
+                              $event
+                            )
+                          "
+                        >
+                          <nz-option
+                            *ngFor="let role of roleOptions"
+                            [nzValue]="role"
+                            [nzLabel]="role"
+                          ></nz-option>
+                        </nz-select>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </nz-collapse-panel>
+            </nz-collapse>
+          </ng-container>
+        </div>
+    </ng-container>
+
+    <!-- Preferences Tab -->
+    <ng-container *ngIf="selectedTabIndex === 2">
+      <p>Preferences content goes here.</p>
+    </ng-container>
+
+    <!-- Security Tab -->
+    <ng-container *ngIf="selectedTabIndex === 3">
+      <p>Security settings like password change, 2FA, etc.</p>
+    </ng-container>
+  </div>
+
+  <!-- Footer -->
+  <div class="modal-footer text-right">
+    <nz-space>
+      <button *nzSpaceItem nz-button nzType="default" (click)="closeModal()">
+        Cancel
+      </button>
+      <button
+        *nzSpaceItem
+        nz-button
+        nzType="primary"
+        [disabled]="!isFormComplete()"
+        (click)="submitUserProfile()"
+      >
+        Save
+      </button>
+    </nz-space>
+  </div>
+</div>

@@ -1,0 +1,199 @@
+::ng-deep .ant-modal-body {
+    padding: 15px 20px 0px 35px !important;
+  }
+  
+  ::ng-deep .ant-modal {
+    width: 100% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 !important;
+  }
+  
+  ::ng-deep .ant-modal-content {
+    padding: 0 !important;
+    width: 900px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  ::ng-deep .ant-form-item-explain-error{
+    margin: 0 0 0 0 !important;
+    padding: 8px 0px 8px 0px !important;
+  }
+
+  .modal-container {
+    display: flex;
+    flex-direction: column;
+    height: 65vh; // uniform height
+    max-width: 900px;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden; // prevent overflow due to long content
+  }
+  
+  .modal-tabs-header {
+    flex: 0 0 auto;
+    padding: 12px 20px 0;
+    background: white;
+    z-index: 10;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .modal-content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 16px 20px;
+    min-height: 0; // important for flex children with scroll
+  }
+  
+  .modal-footer {
+    flex: 0 0 auto;
+    padding: 12px 16px;
+    background: white;
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  
+
+  .profile-progress {
+    margin: 10px 0 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+
+  
+  
+  .avatar-section {
+    display: flex;
+    align-items: flex-start; // Align upload-info to the top of avatar
+    gap: 24px;
+  }
+  
+  .avatar-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .upload-btn {
+    margin-top: 8px;
+    padding: 0 12px;
+    font-size: 14px;
+  }
+  
+  
+  .avatar-uploader {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    position: relative;
+  }
+  
+  .avatar-container {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .avatar-placeholder {
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: #1890ff;
+  }
+  
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  .edit-icon {
+    z-index: 100;
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background-color: white;
+    border-radius: 50%;
+    padding: 4px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+  }
+  
+  
+  .upload-info {
+    max-width: 400px;
+  }
+  
+  .upload-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  
+  .upload-subtitle {
+    font-size: 13px;
+    color: #555;
+    margin: 0 0 4px;
+  }
+  
+  .upload-format {
+    font-size: 12px;
+    color: #999;
+  }
+  
+  .ant-upload {
+    width: 100%;
+    height: 100%;
+  }
+  
+  :host ::ng-deep .ant-upload {
+    border-radius: 50%;
+  }
+  
+  ::ng-deep .ant-collapse > .ant-collapse-item {
+  margin-bottom: 12px;
+}
+
+
+
+  .manage-access-section {
+  h3 {
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .access-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f5f5f5;
+    }
+
+    tr:not(:last-child) {
+      border-bottom: 1px solid #ddd;
+    }
+  }
+}

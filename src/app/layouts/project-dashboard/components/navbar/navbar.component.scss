@@ -1,0 +1,83 @@
+.custom-page-header {
+  background-color: #f9fafc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  .ant-avatar {
+    background-color: #e6f7ff;
+    border: 1px solid #91d5ff;
+  }
+
+  .ant-page-header-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f1f1f;
+  }
+
+  .ant-page-header-subtitle {
+    font-size: 14px;
+    color: #8c8c8c;
+    margin-top: 4px;
+  }
+
+  .ant-tag {
+    font-weight: 500;
+    padding: 2px 12px;
+    border-radius: 16px;
+  }
+
+  .action-buttons {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+
+    button {
+      font-weight: 500;
+    }
+
+    button[nzType='primary'] {
+      background-color: #1890ff;
+      color: white;
+
+      &:hover {
+        background-color: #40a9ff;
+      }
+    }
+  }
+
+  .ant-page-header-content {
+    margin-top: 8px;
+
+    .content {
+      p {
+        margin: 0;
+        font-size: 15px;
+        color: #4a4a4a;
+        line-height: 1.5;
+      }
+    }
+
+    .view-switcher {
+      display: flex;
+      justify-content: center;
+
+      .ant-segmented {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .custom-page-header {
+    padding: 16px;
+
+    .action-buttons {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .view-switcher {
+      margin-top: 12px;
+    }
+  }
+}

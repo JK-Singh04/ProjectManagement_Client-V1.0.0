@@ -1,0 +1,77 @@
+<nz-layout
+  class="full-layout"
+  [appHideIfClaimsNotMet]="claimReq.globalUserOnly"
+>
+  <!-- Sidebar -->
+  <nz-sider
+    nzCollapsible
+    [(nzCollapsed)]="isCollapsed"
+    class="sidebar"
+    [nzTrigger]="null"
+  >
+    <app-sidebar [isCollapsed]="isCollapsed"></app-sidebar>
+
+    <!-- SINGLE TOGGLE ICON -->
+    <span
+      class="trigger"
+      nz-icon
+      [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+      (click)="toggleSidebar()"
+    ></span>
+  </nz-sider>
+
+  <nz-layout class="content-layout">
+    <app-header
+      [isDarkMode]="isDarkMode"
+      [teams]="teams"
+      (teamChange)="onTeamChange($event)"
+      (toggleTheme)="toggleTheme()"
+      (logout)="onLogout()"
+    />
+
+    <!--Main Content-->
+    <nz-content class="empty-teams-container">
+      <img
+        src="assets/images/teams-empty.png"
+        alt="No Teams Illustration"
+        class="empty-image"
+      />
+      <h2>You haven't joined any teams yet</h2>
+      <p>Start by creating your own team or joining an existing one.</p>
+      <div class="action-buttons">
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="large"
+          (click)="openCreateTeamModal()"
+        >
+          <nz-icon nzType="edit"></nz-icon>
+          Create Team
+        </button>
+        <!--<div class="team-list" *ngIf="teams.length > 0">
+  <h3>Your Teams</h3>
+  <ul>
+    <li *ngFor="let team of teams">
+      <strong>{{ team.teamName }}</strong>
+      <span *ngIf="team.isPrivate" class="badge-private">Private</span>
+      <span *ngIf="!team.isPrivate" class="badge-public">Public</span>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="teams.length === 0">
+  <p>No teams created yet. Start by creating one!</p>
+</div>-->
+        <button
+          nz-button
+          nzType="default"
+          nzSize="large"
+          (click)="invitePeopleModal()"
+        >
+          <nz-icon nzType="usergroup-add"></nz-icon>
+          Invite People
+        </button>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

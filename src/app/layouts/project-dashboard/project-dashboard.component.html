@@ -1,0 +1,289 @@
+<nz-layout
+  class="full-layout"
+  [appHideIfClaimsNotMet]="claimReq.globalUserOnly"
+>
+  <!-- Sidebar -->
+  <nz-sider
+    nzCollapsible
+    [(nzCollapsed)]="isCollapsed"
+    class="sidebar"
+    [nzTrigger]="null"
+  >
+    <app-sidebar [isCollapsed]="isCollapsed"></app-sidebar>
+    <span
+      class="trigger"
+      nz-icon
+      [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+      (click)="toggleSidebar()"
+    ></span>
+  </nz-sider>
+
+  <!-- Content -->
+  <nz-layout class="content-layout">
+    <app-header
+      [isDarkMode]="isDarkMode"
+      (toggleTheme)="toggleTheme()"
+      (logout)="onLogout()"
+    ></app-header>
+
+    <div class="dashboard-content">
+      <!-- Charts Section -->
+      <div nz-row [nzGutter]="[0, 24]">
+        <div nz-col [nzSpan]="24">
+          <nz-card
+            nzTitle="Task Priority Distribution"
+            [nzBordered]="false"
+            class="chart-card"
+          >
+            <ngx-charts-bar-vertical
+              [view]="view"
+              [scheme]="'vivid'"
+              [results]="priorityChartData"
+              [xAxis]="true"
+              [yAxis]="true"
+              [legend]="true"
+              [showDataLabel]="true"
+              [animations]="true"
+              [gradient]="false"
+              [barPadding]="10"
+            ></ngx-charts-bar-vertical>
+          </nz-card>
+        </div>
+
+        <div nz-col [nzSpan]="24">
+          <nz-card
+            nzTitle="Project Status"
+            [nzBordered]="false"
+            class="chart-card"
+          >
+            <ngx-charts-pie-chart
+              [view]="view"
+              [scheme]="'cool'"
+              [results]="statusChartData"
+              [legend]="true"
+              [doughnut]="false"
+              [labels]="true"
+              [explodeSlices]="false"
+              [animations]="true"
+            ></ngx-charts-pie-chart>
+          </nz-card>
+        </div>
+
+        <!-- Task Table Section -->
+        <div nz-col [nzSpan]="24" style="overflow-x: auto">
+          <nz-card nzTitle="Your Tasks" [nzBordered]="false" class="table-card">
+            <div class="main-container p-4">
+              <!-- Filters -->
+              <div
+                class="filters mb-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-center"
+                style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                  margin-bottom: 16px;
+                "
+              >
+                <input
+                  nz-input
+                  placeholder="Search by Title"
+                  [(ngModel)]="searchValue"
+                  (ngModelChange)="search()"
+                  style="width: 200px"
+                />
+
+                <nz-select
+                  nzMode="multiple"
+                  nzAllowClear
+                  nzShowSearch
+                  [nzPlaceHolder]="'Filter by Status'"
+                  [(ngModel)]="selectedStatusFilters"
+                  (ngModelChange)="onStatusFilterChange($event)"
+                  style="width: 200px"
+                >
+                  <nz-option
+                    *ngFor="let s of statusFilters"
+                    [nzValue]="s.value"
+                    [nzLabel]="s.label"
+                  ></nz-option>
+                </nz-select>
+
+                <nz-select
+                  nzMode="multiple"
+                  nzAllowClear
+                  nzShowSearch
+                  [nzPlaceHolder]="'Filter by Priority'"
+                  [(ngModel)]="selectedPriorityFilters"
+                  (ngModelChange)="onPriorityFilterChange($event)"
+                  style="width: 200px"
+                >
+                  <nz-option
+                    *ngFor="let p of priorityFilters"
+                    [nzValue]="p.value"
+                    [nzLabel]="p.label"
+                  ></nz-option>
+                </nz-select>
+
+                <button nz-button nzType="default" (click)="reset()">
+                  Reset
+                </button>
+
+                <button
+                  nz-button
+                  nzType="primary"
+                  (click)="exportToExcel()"
+                  class="w-full md:w-auto"
+                >
+                  <i nz-icon nzType="download"></i> Export to Excel
+                </button>
+              </div>
+
+              <!-- Table -->
+              <nz-table
+                #nzTable
+                [nzData]="pagedData"
+                [nzScroll]="{ x: 'max-content' }"
+                [nzBordered]="true"
+                [nzTableLayout]="'fixed'"
+                [nzShowPagination]="false"
+              >
+                <thead>
+                  <tr
+                    cdkDropList
+                    cdkDropListOrientation="horizontal"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    <th style="width: 40px"></th>
+                    <th
+                      *ngFor="let column of columns; let i = index"
+                      cdkDrag
+                      [cdkDragData]="column"
+                      [hidden]="!column.visible"
+                      style="cursor: move"
+                    >
+                      {{ column.label }}
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <ng-container *ngFor="let data of pagedData">
+                    <tr>
+                      <td
+                        [nzExpand]="
+                          data.id !== undefined && expandSet.has(data.id)
+                        "
+                        (nzExpandChange)="onExpandChange(data.id, $event)"
+                        style="width: 40px"
+                      ></td>
+
+                      <td
+                        *ngFor="let column of columns"
+                        [hidden]="!column.visible"
+                      >
+                        <ng-container [ngSwitch]="column.key">
+                          <ng-container *ngSwitchCase="'title'">
+                            <div *ngIf="editingId !== data.id">
+                              {{ data.title }}
+                            </div>
+                            <input
+                              *ngIf="editingId === data.id"
+                              [(ngModel)]="data.title"
+                              nz-input
+                            />
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'author'">
+                            <nz-avatar
+                              class="author-avatar"
+                              *ngIf="
+                                data.authorAvatarUrl &&
+                                  data.authorAvatarUrl.length > 0;
+                                else initialsAvatar
+                              "
+                              [nzSrc]="data.authorAvatarUrl"
+                              nzSize="small"
+                              (nzError)="data.authorAvatarUrl = undefined"
+                            ></nz-avatar>
+                            <ng-template #initialsAvatar>
+                              <nz-avatar
+                                class="author-avatar"
+                                [nzText]="getInitials(data.authorFullName)"
+                                nzSize="small"
+                              ></nz-avatar>
+                            </ng-template>
+                            {{ data.authorFullName }}
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'status'">
+                            <nz-tag
+                              [nzColor]="
+                                {
+                                  'To Do': 'blue',
+                                  'Work In Progress': 'orange',
+                                  'Under Review': 'gold',
+                                  Completed: 'green'
+                                }[data.status]
+                              "
+                            >
+                              {{ data.status }}
+                            </nz-tag>
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'priority'">
+                            <nz-tag
+                              [nzColor]="
+                                {
+                                  Low: 'default',
+                                  Medium: 'cyan',
+                                  High: 'volcano',
+                                  Urgent: 'red'
+                                }[data.priority]
+                              "
+                            >
+                              {{ data.priority }}
+                            </nz-tag>
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'dueDate'">
+                            {{ data.dueDate | date : "mediumDate" }}
+                          </ng-container>
+
+                          <ng-container *ngSwitchCase="'projectName'">
+                            {{ data.projectName }}
+                          </ng-container>
+
+                          <ng-container *ngSwitchDefault>
+                            {{ getColumnValue(data, column.key) }}
+                          </ng-container>
+                        </ng-container>
+                      </td>
+                    </tr>
+
+                    <tr *ngIf="data.id !== undefined && expandSet.has(data.id)">
+                      <td [attr.colspan]="visibleColumnCount()">
+                        <strong>Description:</strong> {{ data.description }}
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </nz-table>
+
+              <!-- Pagination -->
+              <nz-pagination
+                class="pagination"
+                [(nzPageIndex)]="pageIndex"
+                [(nzPageSize)]="pageSize"
+                [nzTotal]="total"
+                [nzShowSizeChanger]="true"
+                [nzPageSizeOptions]="[10, 25, 50]"
+                [nzShowQuickJumper]="true"
+                (nzPageIndexChange)="onPageChange($event)"
+                (nzPageSizeChange)="onPageSizeChange($event)"
+              ></nz-pagination>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+    </div>
+  </nz-layout>
+</nz-layout>

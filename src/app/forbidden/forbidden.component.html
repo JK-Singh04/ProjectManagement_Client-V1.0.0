@@ -1,0 +1,27 @@
+<div class="error-page-container">
+  <h1 *ngIf="type === '403'" class="display-1">403</h1>
+  <h1 *ngIf="type === '404'" class="display-1">404</h1>
+
+  <h2 *ngIf="type === '403'" class="display-6">Permission Denied</h2>
+  <h2 *ngIf="type === '404'" class="display-6">Page Not Found</h2>
+
+  <nz-result 
+    *ngIf="type === '403'" 
+    nzStatus="403" 
+    nzTitle="403" 
+    nzSubTitle="Sorry, you are not authorized to access this page.">
+    <div nz-result-extra>
+      <button nz-button nzType="primary" (click)="navigateHome()">Back Home</button>
+    </div>
+  </nz-result>
+
+  <nz-result 
+    *ngIf="type === '404'" 
+    nzStatus="404" 
+    nzTitle="404" 
+    nzSubTitle="Sorry, the page you visited does not exist.">
+    <div nz-result-extra>
+      <button nz-button nzType="primary" (click)="navigateHome()">Back Home</button>
+    </div>
+  </nz-result>
+</div>

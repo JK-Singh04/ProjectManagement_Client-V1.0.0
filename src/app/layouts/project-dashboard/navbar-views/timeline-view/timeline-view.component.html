@@ -1,0 +1,99 @@
+<div class="timeline-container">
+  <div class="zoom-controls">
+    <button (click)="changeZoom('day')" [class.active]="zoomLevel === 'day'">
+      Day
+    </button>
+    <button (click)="changeZoom('week')" [class.active]="zoomLevel === 'week'">
+      Week
+    </button>
+    <button
+      (click)="changeZoom('month')"
+      [class.active]="zoomLevel === 'month'"
+    >
+      Month
+    </button>
+  </div>
+
+  <div class="timeline-wrapper">
+    <!-- LEFT LABELS -->
+    <div class="label-column">
+      <ng-container *ngFor="let status of getTaskStatuses()">
+        <div class="group-header">{{ status }}</div>
+        <div class="label-cell" *ngFor="let task of tasksGrouped[status]">
+          <div class="task-label">
+            <span
+              class="bullet"
+              [ngClass]="task.status.toLowerCase().replace(' ', '-')"
+            ></span>
+            <span>{{ task.title }}</span>
+            <small
+              >({{
+                task.authorFullName || task.authorUserName || "Unknown"
+              }})</small
+            >
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- GRID CONTAINER WRAPS HEADER + GRID -->
+    <div
+      class="grid-container"
+      #scrollContainer
+      (scroll)="onGridScroll($event)"
+    >
+      <!-- Sticky Header Row -->
+      <div
+        class="calendar-header"
+        [style.gridTemplateColumns]="'repeat(' + days.length + ', 120px)'"
+        #calendarHeader
+      >
+        <div
+          class="cell"
+          *ngFor="let day of days"
+          [ngClass]="{ today: day === today }"
+        >
+          {{ formatDateLabel(day) }}
+        </div>
+      </div>
+
+      <!-- Scrollable Calendar Body -->
+      <div
+        class="calendar-grid"
+        [style.gridTemplateColumns]="'repeat(' + days.length + ', 120px)'"
+        [style.gridTemplateRows]="
+          'repeat(' + (totalGridRows - headerRows) + ', 40px)'
+        "
+        #calendarGrid
+      >
+        <div
+          class="grid-row"
+          *ngFor="let _ of fakeRows(totalGridRows - headerRows)"
+        >
+          <div class="cell" *ngFor="let day of days"></div>
+        </div>
+
+        <!-- Task Bars -->
+        <ng-container *ngFor="let status of getTaskStatuses()">
+          <ng-container
+            *ngFor="let task of tasksGrouped[status]; let rowIndex = index"
+          >
+            <div
+              class="task-bar"
+              [style.gridColumn]="
+                getGridColumn(task).colStart +
+                ' / span ' +
+                getGridColumn(task).colSpan
+              "
+              [style.gridRow]="globalRowIndex(status, rowIndex)"
+              [ngClass]="task.priority.toLowerCase()"
+              (click)="viewTask(task)"
+            >
+              {{ task.title }}
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

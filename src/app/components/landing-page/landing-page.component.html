@@ -1,0 +1,330 @@
+<nz-layout>
+  <!-- Header -->
+  <nz-header class="header">
+    <div class="header-content">
+      <!-- Logo -->
+      <div class="logo">
+<img src="/assets/images/authec-logo.png" alt="Project Management Portal Logo" />
+      </div>
+
+      <!-- Navigation Menu 
+      <ul nz-menu nzTheme="dark" nzMode="horizontal" class="menu">
+        <li nz-menu-item><a routerLink="/home">Home</a></li>
+        <li nz-menu-item><a routerLink="/menu">Menu</a></li>
+        <li nz-menu-item><a routerLink="/contact">Contact</a></li>
+      </ul> -->
+
+      <!-- Search Bar (Centered) -->
+      <div class="search-bar">
+        <input nz-input placeholder="Search for bakery items..." />
+        <button nz-button nzType="default">
+          <nz-icon nzType="search"></nz-icon>
+        </button>
+      </div>
+
+      <!-- Avatar Dropdown (Top-Right) -->
+      <a nz-dropdown [nzDropdownMenu]="menu">
+        <div class="user-avatar">
+          <nz-avatar nzIcon="user"></nz-avatar>
+        </div>
+      </a>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="log('Profile')">
+            <nz-icon nzType="profile" nzTheme="outline"></nz-icon> Profile
+          </li>
+          <li nz-menu-item (click)="navigateTo('/signin')">
+            <nz-icon nzType="login" nzTheme="outline"></nz-icon> Login
+          </li>
+          <li nz-menu-item (click)="navigateTo('/signup')">
+            <nz-icon nzType="user-add" nzTheme="outline"></nz-icon> Signup
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+  </nz-header>
+
+  <!-- Hero/Header Content -->
+  <section class="ezy__header30 light">
+    <div
+      class="ezy__header30-topbar"
+      style="
+        background-image: url(https://cdn.easyfrontend.com/pictures/contents/contents-banner.jpg);
+      "
+    >
+      <div class="ezy__header30-overlay"></div>
+      <div class="container">
+        <div class="row justify-content-center text-center">
+          <div class="col-12">
+            <h1 class="ezy__header30-heading mb-4">
+  All Your Projects. One Unified Platform.
+</h1>
+            <div class="row justify-content-center">
+              <div class="col-12 col-lg-5 text-center">
+              <p class="ezy__header30-sub-heading">
+  Collaborate, track tasks, and deliver success — with powerful tools for teams of all sizes.
+</p>
+                <form class="ezy__header30-search-form">
+                  <div class="input-group mt-4">
+                    <input
+                      class="form-control"
+                      type="search"
+                      placeholder="Search Questions"
+                      aria-label="Search"
+                    />
+                    <button class="btn ezy__header30-btn" type="submit">
+                      <i nz-icon nzType="search"></i>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses Carousel -->
+    <div class="ezy__header30-courses">
+      <div class="container">
+        <div class="carousel-wrapper">
+          <!-- Left Arrow -->
+          <button class="carousel-btn left" (click)="scrollLeft()">
+            <i nz-icon nzType="left"></i>
+          </button>
+
+          <!-- Carousel -->
+          <div class="carousel" #carousel>
+            <div class="carousel-item" *ngFor="let feature of features">
+              <nz-card class="course-card" [nzBordered]="false">
+                <img
+                  class="card-img"
+                  [src]="feature.img"
+                  alt="{{ feature.title }}"
+                />
+                <div class="course-info">
+                  <h4>{{ feature.title }}</h4>
+                  <p>{{ feature.description }}</p>
+                  <button class="btn ezy__header30-btn mt-2">View All</button>
+                </div>
+              </nz-card>
+            </div>
+          </div>
+
+          <!-- Right Arrow -->
+          <button class="carousel-btn right" (click)="scrollRight()">
+            <i nz-icon nzType="right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Section -->
+  <section class="ezy__featured28 light">
+    <div class="ezy__featured28-shape d-none d-lg-block"></div>
+    <div class="container position-relative">
+      <div class="row justify-content-between">
+        <div class="col-lg-5 pe-xl-5 text-center text-lg-start my-5">
+         <h2 class="ezy__featured28-heading mb-4">
+  Streamline Your Project Workflow.
+</h2>
+<p class="ezy__featured28-sub-heading">
+  Assign tasks, manage teams, and gain insights with one centralized solution.
+</p>
+          <a
+            routerLink="/signup"
+            class="btn btn-primary ezy__featured28-btn mt-4 mt-md-5"
+          >
+            Getting Started <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+        <div class="col-lg-6">
+          <div
+            class="ezy__featured28-bg-holder"
+            style="background-image: url('assets/images/featured_cake.png')"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form -->
+  <section class="ezy__contact10 light">
+    <div class="container">
+      <div class="row align-items-center justify-content-between">
+        <div nz-row>
+          <div nz-col nzFlex="2">
+            <!-- Contact Form (occupying 2/5th of the section Left Side on Full Screen) -->
+            <div class="col-lg-5 order-lg-1">
+              <div class="card ezy__contact10-form-card">
+                <div class="card-body p-md-5">
+                  <h2 class="ezy__contact10-heading mb-3 text-center">
+                    Contact Us
+                  </h2>
+                <p class="ezy__contact10-sub-heading mb-5 text-center">
+  Reach out to learn how we can support your project needs.
+</p>
+
+
+                  <form>
+                    <div class="form-group mb-3 mt-2">
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Name"
+                      />
+                    </div>
+                    <div class="form-group mb-3 mt-2">
+                      <input
+                        type="email"
+                        class="form-control"
+                        placeholder="Enter Email"
+                      />
+                    </div>
+                    <div class="form-group mb-3">
+                      <textarea
+                        name="message"
+                        class="form-control"
+                        placeholder="Enter Message"
+                        rows="3"
+                      ></textarea>
+                    </div>
+                    <div class="text-end">
+                      <button
+                        type="submit"
+                        class="btn btn-primary ezy__contact10-btn"
+                      >
+                        Send
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div nz-col nzFlex="3">
+            <!-- Contact Info (occupying 3/5th of the section Right Side on Full Screen) -->
+            <div class="col-lg-6 order-lg-2 mb-3 mb-lg-0">
+              <div
+                class="ezy__contact10-bg-holder h-100 d-flex align-items-center py-5"  
+                style="
+                  background-image: url(https://cdn.easyfrontend.com/pictures/contact/contact_7.png);"
+              >
+                <div class="ezy__contact10-links">
+                  <div class="card ezy__contact10-link">
+                    <div class="card-body">
+                      <i
+                        class="fas fa-envelope-open-text ezy__contact10-icon fs-3 px-2"
+                      ></i>
+                      <a
+                        class="ezy__contact10-link-content ms-4"
+                        href="mailto:email@easyfrontend.com"
+                        >email.easyfrontend.com</a
+                      >
+                    </div>
+                  </div>
+                  <div class="card ezy__contact10-link mt-4">
+                    <div class="card-body">
+                      <i
+                        class="fas fa-phone-alt ezy__contact10-icon fs-3 px-2"
+                      ></i>
+                      <a
+                        class="ezy__contact10-link-content ms-4"
+                        href="callto:123**56"
+                        >+880 1742-0****0</a
+                      >
+                    </div>
+                  </div>
+                  <div class="card ezy__contact10-link mt-4">
+                    <div class="card-body">
+                      <i class="fas fa-hdd ezy__contact10-icon fs-3 px-2"></i>
+                      <a class="ezy__contact10-link-content ms-4" href="#"
+                        >easyfrontend.com</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>       
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ezy__footer18 light">
+    <div class="ezy__footer18-newsletter p-4 p-md-5">
+      <h2>Newsletter</h2>
+      <form>
+        <div class="form-group mt-5 mb-0">
+          <div class="input-group d-flex justify-content-center">
+            <input
+              type="email"
+              class="form-control"
+              placeholder="Enter Email"
+            />
+            <button class="btn btn-danger ezy__footer18-newsletter-btn">
+              Subscribe
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="container">
+      <div class="row text-center text-sm-start mb-md-5">
+        <div class="col-lg-3">
+          <h2 class="fw-bold">Project Management Portal</h2>
+          <p class="ezy__footer18-text opacity-75 mt-4 pe-lg-4">
+           Be the first to discover productivity tips, project hacks, and powerful collaboration tools.
+          </p>
+        </div>
+       <!--<div class="col-sm-6 col-lg-2">
+          <h5>Quick Links</h5>
+          <ul class="nav flex-column">
+            <li><a routerLink="/home">Home</a></li>
+            <li><a routerLink="/about">About Us</a></li>
+            <li><a routerLink="/menu">Menu</a></li>
+          </ul>
+        </div>
+        --> 
+        <div class="col-sm-6 col-lg-2">
+          <h5>Social Media</h5>
+          <ul class="nav flex-column">
+            <li>
+              <nz-icon nzType="facebook" nzTheme="outline"></nz-icon>
+              <a href="#">Facebook</a>
+            </li>
+            <li>
+              <nz-icon nzType="instagram" nzTheme="fill"></nz-icon>
+              <a href="#">Instagram</a>
+            </li>
+            <li>
+              <nz-icon nzType="linkedin" nzTheme="outline"></nz-icon>
+              <a href="#">LinkedIn</a>
+            </li>
+            <li>
+              <nz-icon nzType="twitter" nzTheme="outline"></nz-icon>
+              <a href="#">Twitter</a>
+            </li>
+          </ul>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <h5>Contact Us</h5>
+          <ul class="nav flex-column">
+            <li>City, Country</li>
+            <li><a href="mailto:contact&#64;projectportal.com">contact&#64;projectportal.com</a></li>
+            <li><a href="tel:+123456789">+123 456 789</a></li>
+          </ul>
+        </div>
+      </div>
+      <hr />
+      <div class="text-center">
+&copy; 2025 Project Portal | Made with ❤️ by Your Team
+      </div>
+    </div>
+  </footer>
+</nz-layout>

@@ -1,0 +1,211 @@
+<form
+  [formGroup]="taskForm"
+  (ngSubmit)="submitForm()"
+  nz-form
+  [nzLayout]="'vertical'"
+>
+  <!-- Title -->
+  <nz-form-item>
+    <nz-form-control [nzErrorTip]="'Title is required'">
+      <input
+        nz-input
+        formControlName="title"
+        placeholder="Task title"
+        preventEnterSubmit
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Description -->
+  <nz-form-item>
+    <nz-form-control [nzErrorTip]="'Description is required'">
+      <textarea
+        nz-input
+        formControlName="description"
+        placeholder="Task description"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Status + Priority -->
+  <nz-form-item>
+    <nz-form-control>
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="'Status is required'">
+              <nz-select
+                formControlName="status"
+                nzPlaceHolder="Select status"
+                style="width: 100%"
+              >
+                <nz-option
+                  *ngFor="let status of statuses"
+                  [nzValue]="status"
+                  [nzLabel]="status"
+                ></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="'Priority is required'">
+              <nz-select
+                formControlName="priority"
+                nzPlaceHolder="Select priority"
+                style="width: 100%"
+              >
+                <nz-option
+                  *ngFor="let priority of priorities"
+                  [nzValue]="priority"
+                  [nzLabel]="priority"
+                ></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Tags -->
+  <nz-form-item>
+    <nz-form-control [nzErrorTip]="'Tag(s) are not assigned'">
+      <input
+        nz-input
+        type="text"
+        placeholder="Add tag and press Enter"
+        (keydown.enter)="onTagEnter($event)"
+        (keydown.backspace)="onBackspace($event)"
+      />
+
+      <div style="margin-top: 8px">
+        <nz-tag
+          nzColor="blue"
+          [nzBordered]="false"
+          *ngFor="let tag of tags"
+          nzMode="closeable"
+          (nzOnClose)="removeTag(tag)"
+        >
+          {{ tag }}
+        </nz-tag>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Start Date + Due Date -->
+  <nz-form-item>
+    <nz-form-control>
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="'Start date is required'">
+              <nz-date-picker
+                nzFormat="dd/MM/yyyy"
+                formControlName="startDate"
+                style="width: 100%"
+                nzPlaceHolder="Start date"
+                preventEnterSubmit
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="'Due date is required'">
+              <nz-date-picker
+                nzFormat="dd/MM/yyyy"
+                formControlName="dueDate"
+                style="width: 100%"
+                nzPlaceHolder="Due date"
+                preventEnterSubmit
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Assignee + Author on same line -->
+  <nz-form-item>
+    <nz-form-control>
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="'Assignee is required'">
+              <nz-select
+                formControlName="assignee"
+                nzPlaceHolder="Select assignee"
+                style="width: 100%"
+              >
+                <nz-option
+                  *ngFor="let user of users"
+                  [nzValue]="user.id"
+                  [nzLabel]="user.name"
+                ></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="'Author is required'">
+              <nz-select
+                formControlName="author"
+                [nzPlaceHolder]="'Author is ' + (currentUserName || 'Unknown')"
+                [nzDisabled]="true"
+                style="width: 100%"
+              >
+                <nz-option
+                  *ngFor="let user of users"
+                  [nzValue]="user.id"
+                  [nzLabel]="user.name"
+                ></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!--
+  <nz-form-item>
+    <nz-form-control>
+      <label nz-checkbox formControlName="allowSelfAssign">
+        Allow Assignees to assign the task themselves
+      </label>
+    </nz-form-control>
+  </nz-form-item> -->
+
+  <!-- Attachments -->
+  <nz-form-item>
+    <nz-form-control>
+      <nz-upload
+        [nzBeforeUpload]="beforeUpload"
+        [nzFileList]="attachments"
+        (nzChange)="handleFileChange($event)"
+        [nzMultiple]="true"
+      >
+        <button nz-button type="button">
+          <span>Upload files</span>
+        </button>
+      </nz-upload>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Actions -->
+  <div class="form-actions">
+    <button nz-button nzType="default" (click)="cancel()">Cancel</button>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="!taskForm.valid"
+      type="submit"
+    >
+      Create
+    </button>
+  </div>
+</form>

@@ -1,0 +1,111 @@
+<form
+  [formGroup]="projectForm"
+  (ngSubmit)="submitForm()"
+  nz-form
+  [nzLayout]="'vertical'"
+>
+  <nz-form-item>
+    <nz-form-label [nzRequired]="true">Project Name</nz-form-label>
+    <nz-form-control nzErrorTip="Project name is required">
+      <input
+        nz-input
+        formControlName="projectName"
+        placeholder="Enter project name"
+        preventEnterSubmit
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzRequired]="true">Description</nz-form-label>
+    <nz-form-control nzErrorTip="Description is required">
+      <textarea
+        nz-input
+        formControlName="description"
+        placeholder="Project description"
+      ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Proposed Start Date + Due Date -->
+  <nz-form-item>
+    <nz-form-label [nzRequired]="true">Proposed Duration</nz-form-label>
+    <nz-form-control>
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="'Start date is required'">
+              <nz-date-picker
+                nzFormat="dd/MM/yyyy"
+                formControlName="proposedstartDate"
+                style="width: 100%"
+                nzPlaceHolder="Start date"
+                preventEnterSubmit
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control [nzErrorTip]="'Due date is required'">
+              <nz-date-picker
+                nzFormat="dd/MM/yyyy"
+                formControlName="proposeddueDate"
+                style="width: 100%"
+                nzPlaceHolder="Due date"
+                preventEnterSubmit
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Actual Start Date + Due Date -->
+  <nz-form-item>
+    <nz-form-label>Actual Duration</nz-form-label>
+    <nz-form-control>
+      <div nz-row [nzGutter]="16">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-date-picker
+                nzFormat="dd/MM/yyyy"
+                formControlName="actualstartDate"
+                style="width: 100%"
+                nzPlaceHolder="Start date"
+                preventEnterSubmit
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-date-picker
+                nzFormat="dd/MM/yyyy"
+                formControlName="actualdueDate"
+                style="width: 100%"
+                nzPlaceHolder="Due date"
+                preventEnterSubmit
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="form-actions">
+    <button nz-button nzType="default" (click)="cancel()">Cancel</button>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="!projectForm.valid"
+      htmlType="submit"
+    >
+      Create
+    </button>
+  </div>
+</form>

@@ -1,0 +1,104 @@
+<nz-page-header>
+  <!-- Breadcrumb 
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item>Dashboard</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Projects</nz-breadcrumb-item>
+      <nz-breadcrumb-item>Active</nz-breadcrumb-item>
+    </nz-breadcrumb> -->
+
+  <!-- Avatar (you can use user image or initials) -->
+  <nz-avatar nz-page-header-avatar nzSrc="assets/user-avatar.png"></nz-avatar>
+
+  <!-- Title -->
+  <nz-page-header-title>Project Management</nz-page-header-title>
+
+  <!-- Subtitle -->
+  <nz-page-header-subtitle
+    >Welcome back! Manage your tasks and teams.</nz-page-header-subtitle
+  >
+
+  <!-- Extra (right-side controls) -->
+  <nz-page-header-extra>
+    <nz-space>
+      <!-- Search bar
+      <span *nzSpaceItem class="search-bar">
+        <input nz-input placeholder="Search..." />
+        <button nz-button nzType="default">
+          <nz-icon nzType="search"></nz-icon>
+        </button>
+      </span>  -->
+
+      <!-- Dark mode toggle 
+      <nz-switch
+        *nzSpaceItem
+        [(ngModel)]="isDarkMode"
+        (ngModelChange)="toggleTheme()"
+      >
+        <ng-template #checkedChildren>🌙</ng-template>
+        <ng-template #unCheckedChildren>☀️</ng-template>
+      </nz-switch> -->
+
+      <!-- Add Project Button -->
+      <button
+        *nzSpaceItem
+        nz-button
+        nzType="primary"
+        class="add-project-btn"
+        (click)="openAddProjectModal()"
+      >
+        <nz-icon nzType="plus-circle"></nz-icon> Add Project
+      </button>
+      <!-- Teams -->
+      <nz-button-group>
+        <button
+          nz-button
+          nz-dropdown
+          [nzDropdownMenu]="menu2"
+          nzPlacement="bottomLeft"
+        >
+          <nz-icon nzType="team" />
+        </button>
+        <button nz-button (click)="openCreateTeamModal()">Create Team</button>
+      </nz-button-group>
+      <nz-dropdown-menu #menu2="nzDropdownMenu">
+        <ul nz-menu *ngIf="teams.length > 0; else noTeams">
+          <li
+            nz-menu-item
+            *ngFor="let team of teams"
+            (click)="onTeamSelect(team.teamName)"
+          >
+            <span>{{ team.teamName }}</span>
+            <nz-tag
+              *ngIf="team.isPrivate"
+              nzColor="orange"
+              style="margin-left: 8px"
+              >Private</nz-tag
+            >
+            <nz-tag
+              *ngIf="!team.isPrivate"
+              nzColor="green"
+              style="margin-left: 8px"
+              >Public</nz-tag
+            >
+          </li>
+        </ul>
+        <ng-template #noTeams>
+          <ul nz-menu>
+            <li nz-menu-item>No teams yet</li>
+          </ul>
+        </ng-template>
+      </nz-dropdown-menu>
+
+      <!-- Logout -->
+      <button
+        *nzSpaceItem
+        nz-button
+        nzType="primary"
+        nzDanger="true"
+        (click)="onLogout()"
+      >
+        <nz-icon nzType="logout"></nz-icon> Logout
+      </button>
+    </nz-space>
+  </nz-page-header-extra>
+</nz-page-header>

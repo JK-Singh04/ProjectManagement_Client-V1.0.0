@@ -1,0 +1,124 @@
+// Project Dashboard Layout Styles
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.full-layout {
+  height: 100vh;
+  overflow: hidden;
+}
+
+ nz-sider {
+    overflow: auto;
+    height: 100%;
+    position: fixed;
+    left: 0;
+  }
+  
+  nz-sider {
+    width: 230px !important;
+    min-width: 230px !important;
+    max-width: 230px !important;
+
+    &.ant-layout-sider-collapsed {
+      width: 83px !important;
+      min-width: 83px !important;
+      max-width: 83px !important;
+    }
+  }
+  
+  
+  .sidebar {
+    min-height: 100vh;
+    background: #001529;
+    position: relative;
+    z-index: 1000;
+    padding-top: 64px; // space for header if needed
+  }
+
+
+
+//keep this
+::ng-deep li[nz-menu-item] a {
+  color: var(--sidebar-link) !important;
+  transition: color 0.3s;
+}
+
+
+
+/* Toggle Button */
+.trigger {
+  position: fixed;
+  top: 20px;
+  left: 10px; // Adjust based on collapsed width
+  z-index: 1050;
+  background: var(--sidebar-bg);
+  color: white;
+  font-size: 20px;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: left 0.3s ease;
+}
+
+
+
+/* Main Layout */
+.content-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+.empty-teams-container {
+  margin-bottom: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 120px); // Adjust based on header/sidebar height
+  text-align: center;
+  padding: 24px;
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+.empty-image {
+  max-width: 300px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.empty-teams-container h2 {
+  font-size: 32px;
+  margin-bottom: 12px;
+  justify-content: center;
+}
+
+.empty-teams-container p {
+  font-size: 24px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

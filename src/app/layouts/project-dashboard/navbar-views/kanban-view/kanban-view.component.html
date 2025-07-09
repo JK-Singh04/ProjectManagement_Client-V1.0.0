@@ -1,0 +1,156 @@
+<nz-spin [nzSpinning]="loading" nzSize="large">
+  <!-- Filter Bar -->
+  <div class="kanban-filter-bar">
+    <!-- Search -->
+    <input
+      type="text"
+      placeholder="Search tasks..."
+      [(ngModel)]="searchText"
+      (ngModelChange)="onSearchChange()"
+      class="search-input"
+    />
+
+    <!-- My Tasks Toggle -->
+    <button
+      nz-button
+      [nzType]="onlyMyTasks ? 'primary' : 'default'"
+      (click)="toggleMyTasks()"
+    >
+      <i nz-icon nzType="user"></i>
+      My Tasks
+    </button>
+
+    <!-- Hide Completed Toggle -->
+    <button
+      nz-button
+      [nzType]="hideCompleted ? 'primary' : 'default'"
+      (click)="toggleCompleted()"
+    >
+      <i nz-icon nzType="eye-invisible"></i>
+      Hide Completed
+    </button>
+
+    <!-- Avatar Assignee Filter -->
+    <div class="assignee-avatar-group">
+      <nz-avatar
+        *ngFor="let user of assigneeOptions"
+        [nzText]="getInitials(user.name)"
+        [nzSize]="'small'"
+        [class.selected]="selectedAssignees.includes(user.id)"
+        (click)="filterByAvatar(user.id)"
+        class="assignee-avatar"
+        [nz-tooltip]="user.name"
+      ></nz-avatar>
+    </div>
+    <!--Clear All Filters-->
+    <button nz-button nzType="default" (click)="clearFilters()">
+      <i nz-icon nzType="close-circle"></i>
+      Clear All
+    </button>
+  </div>
+
+  <div class="kanban-grid">
+    <ng-container *ngFor="let status of taskStatus">
+      <div
+        class="kanban-column"
+        cdkDropList
+        #dropList="cdkDropList"
+        [cdkDropListData]="tasksByStatus[status]"
+        [cdkDropListConnectedTo]="dropListRefs"
+        (cdkDropListDropped)="drop($event, status)"
+      >
+        <div class="kanban-column-header">
+          <div
+            class="kanban-status-indicator"
+            [ngStyle]="{ 'background-color': getStatusColor(status) }"
+          ></div>
+          <h3>
+            {{ status }}
+            <span class="task-count">({{ tasksByStatus[status].length }})</span>
+          </h3>
+        </div>
+
+        <div
+          *ngFor="let task of tasksByStatus[status]"
+          class="task-card"
+          cdkDrag
+        >
+          <!-- Dropdown Menu (⋯ Actions) -->
+          <div class="task-actions">
+            <button
+              nz-button
+              nz-dropdown
+              [nzDropdownMenu]="menu"
+              nzTrigger="click"
+              nzPlacement="bottomRight"
+              class="task-dropdown"
+            >
+              <i nz-icon nzType="more"></i>
+            </button>
+
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="openUpdateModal(task)">Update</li>
+                <li nz-menu-item (click)="confirmDelete(task)">Delete</li>
+              </ul>
+            </nz-dropdown-menu>
+          </div>
+
+          <!-- Priority & Tags Row -->
+          <div class="task-meta">
+            <span class="priority" [ngClass]="task.priority.toLowerCase()">
+              {{ task.priority }}
+            </span>
+            <div class="tags">
+              <nz-tag
+                *ngFor="let tag of task.tags ? task.tags.split(',') : []"
+                nzColor="blue"
+                [nzBordered]="false"
+                class="tag"
+              >
+                {{ tag.trim() }}
+              </nz-tag>
+            </div>
+          </div>
+
+          <!-- Title + Description -->
+          <h4 class="task-title">{{ task.title }}</h4>
+          <p class="task-desc">{{ task.description }}</p>
+
+          <!-- Dates -->
+          <p class="task-dates">
+            📅 {{ task.startDate | date : "dd/MM/yyyy" }} -
+            {{ task.dueDate | date : "dd/MM/yyyy" }}
+          </p>
+
+          <!-- Footer: Assignee, Author, Tags (1 Line) -->
+          <!-- Footer: Assigned User -->
+          <div class="task-footer-row">
+            <nz-avatar
+              [nzText]="getInitials(task.assignedFullName ?? '')"
+              nzSize="small"
+              class="footer-avatar"
+            ></nz-avatar>
+            <span class="user-label">
+              Assigned To: {{ task.assignedFullName || "Unassigned" }}
+            </span>
+          </div>
+
+          <!-- Footer: Author -->
+          <div class="task-footer">
+            <nz-avatar
+              [nzText]="getInitials(task.authorFullName ?? '')"
+              nzSize="small"
+              class="footer-avatar author"
+            ></nz-avatar>
+            <span class="user-label author">
+              Author: {{ task.authorFullName || "Unknown" }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</nz-spin>
+
+<!-- <div class="comments">💬 {{ task.comments?.length || 0 }}</div> -->

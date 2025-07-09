@@ -1,0 +1,150 @@
+ul[nz-menu] {
+  // All menu items
+  li[nz-menu-item],
+  li[nz-submenu] > .ant-menu-submenu-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background-color 0.3s ease;
+
+    nz-icon {
+      margin-right: 8px;
+    }
+
+    span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &:hover {
+      background-color: #1890ff !important;
+      border-radius: 4px;
+      cursor: pointer;
+
+      nz-icon,
+      span {
+        color: white !important;
+      }
+    }
+  }
+
+  // Submenu project items
+  li[nz-submenu] ul li[nz-menu-item] {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px !important;
+
+    .project-avatar {
+      margin-right: 8px;
+    }
+
+    &:hover {
+      background-color: #1890ff !important;
+      border-radius: 4px;
+      cursor: pointer;
+
+      .project-avatar,
+      span {
+        color: white !important;
+      }
+    }
+  }
+
+  // Active project highlight
+  .active-project {
+    background-color: #1890ff !important;
+    font-weight: 400;
+    color: white;
+
+    .project-avatar {
+      background-color: #03c003;
+      color: white;
+      margin-right: 8px;
+    }
+  }
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 12px;
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+
+    .fullname {
+      font-weight: 600;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .email {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.65);
+    }
+  }
+}
+
+.profile-section-collapsed {
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+}
+
+.profile-section,
+.profile-section-collapsed {
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1890ff;
+  }
+}
+
+nz-divider::after,
+nz-divider::before {
+  border-color: #ffffff !important;
+}
+
+nz-divider {
+  margin: 8px 0;
+  background-color: #a7a5a5 !important; // Ensure divider is visible
+}
+
+.project-item-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  .project-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+
+    span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .ellipsis-btn {
+    color: white;
+    margin-left: auto;
+    padding: 0;
+    line-height: 1;
+    height: 24px;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+      &:hover {
+    background-color: #1890ff;
+  }
+  }
+}

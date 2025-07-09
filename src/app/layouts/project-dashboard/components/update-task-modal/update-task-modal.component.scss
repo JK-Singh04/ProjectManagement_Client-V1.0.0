@@ -1,0 +1,18 @@
+::ng-deep .ant-form-item-explain-error {
+  margin-left: 0px !important;
+}
+
+::ng-deep .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+nz-upload button {
+  margin-top: 8px;
+}

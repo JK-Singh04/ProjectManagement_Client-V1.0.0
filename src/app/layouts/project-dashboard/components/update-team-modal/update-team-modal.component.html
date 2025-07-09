@@ -1,0 +1,72 @@
+<form [formGroup]="teamForm" (ngSubmit)="submitForm()" nz-form [nzLayout]="'vertical'">
+  <div class="intro-text">
+    <strong>Edit your team</strong> to keep it updated and functional.
+  </div>
+
+  <!-- Team Name -->
+  <nz-form-item>
+    <nz-form-label [nzRequired]="true" nzFor="name">Team name</nz-form-label>
+    <nz-form-control [nzErrorTip]="'Team name is required'">
+      <input
+        nz-input
+        id="name"
+        formControlName="name"
+        placeholder="e.g. Redesign Team, DevOps Squad"
+        preventEnterSubmit
+      />
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Visibility -->
+  <nz-form-item>
+    <nz-form-label>Who can see your team name?</nz-form-label>
+    <nz-form-control>
+      <nz-select formControlName="visibility" style="width: 100%;">
+        <nz-option *ngFor="let option of visibilityOptions" [nzValue]="option" [nzLabel]="option"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Members -->
+  <nz-form-item>
+    <nz-form-label [nzRequired]="true" nzFor="members">Team members</nz-form-label>
+    <nz-form-control [nzErrorTip]="'Select at least one member'">
+      <nz-select
+        formControlName="members"
+        nzMode="multiple"
+        nzPlaceHolder="Choose people"
+        [nzMaxTagCount]="5"
+        [nzMaxMultipleCount]="maxUsers"
+        style="width: 100%;"
+      >
+        <nz-option *ngFor="let user of allUsers" [nzValue]="user.id" [nzLabel]="user.name"></nz-option>
+      </nz-select>
+      <div class="hint">You can invite up to 50 people at once.</div>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Projects -->
+  <nz-form-item>
+    <nz-form-label nzFor="projects">Assigned projects</nz-form-label>
+    <nz-form-control>
+      <nz-select formControlName="projects" nzMode="multiple" nzPlaceHolder="Assign to projects" style="width: 100%;">
+        <nz-option *ngFor="let proj of allProjects" [nzValue]="proj.id" [nzLabel]="proj.name"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Allow Anyone Join 
+  <nz-form-item>
+    <nz-form-control>
+      <label nz-checkbox formControlName="allowAnyoneJoin">
+        Anyone can join this team without approval
+      </label>
+    </nz-form-control>
+  </nz-form-item> -->
+
+  <!-- Buttons -->
+  <div class="form-actions">
+    <button nz-button nzType="default" (click)="cancel()">Cancel</button>
+    <button nz-button nzType="primary" [disabled]="!teamForm.valid" htmlType="submit">Update Team</button>
+  </div>
+</form>

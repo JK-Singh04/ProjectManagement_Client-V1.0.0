@@ -1,0 +1,14 @@
+<nz-spin *ngIf="loading" nzTip="Verifying your invite..."></nz-spin>
+
+<nz-result *ngIf="!loading && inviteValid"
+           nzStatus="success"
+           nzTitle="You're invited!"
+           [nzSubTitle]="'Email: ' + inviteData.email">
+  <button nz-button nzType="primary" (click)="goToSignup()">Proceed to Sign Up</button>
+</nz-result>
+
+<nz-result *ngIf="!loading && !inviteValid"
+           nzStatus="error"
+           nzTitle="Invalid or Expired Invite"
+           nzSubTitle="Please check with the person who invited you or try again.">
+</nz-result>

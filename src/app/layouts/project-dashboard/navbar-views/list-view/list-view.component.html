@@ -1,0 +1,105 @@
+<nz-list
+  *ngIf="!loading"
+  [nzDataSource]="tasks"
+  [nzRenderItem]="item"
+  [nzGrid]="{ gutter: 16, column: 1 }"
+  class="custom-task-list"
+>
+  <ng-template #item let-task>
+    <nz-list-item>
+      <div class="card-wrapper">
+        <nz-card nzHoverable class="task-card">
+             <div class="task-actions">
+              <button
+                nz-button
+                nz-dropdown
+                [nzDropdownMenu]="menu"
+                nzTrigger="click"
+                class="task-dropdown"
+              >
+                <nz-icon nzType="more"></nz-icon>
+              </button>
+
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li nz-menu-item (click)="openUpdateModal(task)">Update</li>
+                  <li nz-menu-item (click)="confirmDelete(task)">Delete</li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          <div class="task-card-inner">
+            <!-- Left Section: Checkbox + Avatar -->
+            <div class="task-left">
+              <label
+                nz-checkbox
+                [(ngModel)]="task.checked"
+                class="task-checkbox"
+              ></label>
+              <nz-avatar
+                *ngIf="task.assignedFullName"
+                [nzText]="getInitials(task.assignedFullName)"
+                nzSize="large"
+                class="task-avatar"
+              ></nz-avatar>
+            </div>
+
+            <!-- Middle Section: Main Info -->
+            <div class="task-middle">
+              <div class="task-subheader">
+                <nz-tag
+                  [nzColor]="getPriorityColor(task.priority)"
+                  nzPresetColor
+                >
+                  {{ task.priority }}
+                </nz-tag>
+                <nz-tag [nzColor]="getStatusColor(task.status)" nzPresetColor>
+                  {{ task.status }}
+                </nz-tag>
+              </div>
+
+              <h3 class="task-title" [class.strikethrough]="task.checked">
+                {{ task.title }}
+              </h3>
+              <p class="task-desc">{{ task.description }}</p>
+
+              <div class="task-tags" *ngIf="task.tags?.length">
+                <nz-tag
+                  *ngFor="let tag of task.tags.split(',')"
+                  nzColor="blue"
+                  >{{ tag.trim() }}</nz-tag
+                >
+              </div>
+
+              <div class="task-dates" *ngIf="task.startDate || task.dueDate">
+                <span
+                  ><strong>Start: </strong>
+                  {{ task.startDate | date : "mediumDate" }}</span
+                >
+                <span
+                  ><strong>Due: </strong>
+                  {{ task.dueDate | date : "mediumDate" }}</span
+                >
+              </div>
+
+              <div class="task-footer">
+                <nz-avatar
+                  [nzText]="getInitials(task.authorFullName)"
+                  nzSize="small"
+                  class="footer-avatar"
+                ></nz-avatar>
+                <span class="author-text"
+                  >Author: {{ task.authorFullName }}</span
+                >
+              </div>
+            </div>
+
+            <!-- Right Section: Optional Image -->
+            <!-- <div class="task-attachment" *ngIf="task.attachments?.length > 0">
+              <img alt="attachment" [src]="task.attachments[0].url" />
+            </div> -->
+          </div>
+        </nz-card>
+      </div>
+    </nz-list-item>
+  </ng-template>
+</nz-list>

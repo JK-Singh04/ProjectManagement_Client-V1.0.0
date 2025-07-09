@@ -1,0 +1,82 @@
+<nz-layout class="full-layout">
+  <!-- Sidebar -->
+  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" class="sidebar">
+    <span class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" (click)="isCollapsed = !isCollapsed"></span>
+    <ul nz-menu nzTheme="light" nzMode="inline">
+      <!-- Global Admin Only -->
+      <li nz-menu-item [appHideIfClaimsNotMet]="claimReq.superAdminOnly">
+        <nz-icon nzType="home"></nz-icon>
+        <span><a routerLink="/dashboard">Dashboard</a></span>
+      </li>
+      <li nz-menu-item [appHideIfClaimsNotMet]="claimReq.superAdminOnly">
+        <nz-icon nzType="user-add" nzTheme="outline"></nz-icon>
+        <span><a routerLink="/roles">Manage Roles</a></span>
+      </li>
+      <li nz-menu-item [appHideIfClaimsNotMet]="claimReq.superAdminOnly">
+        <nz-icon nzType="user"></nz-icon>
+        <span><a routerLink="/users">Global Users</a></span>
+      </li>
+      <li nz-menu-item [appHideIfClaimsNotMet]="claimReq.superAdminOnly">
+        <nz-icon nzType="search"></nz-icon>
+        <span><a routerLink="/search">Search Users</a></span>
+      </li>
+
+    
+
+      <!-- Global User Only -->
+      <li nz-menu-item [appHideIfClaimsNotMet]="claimReq.globalUserOnly">
+        <nz-icon nzType="home"></nz-icon>
+        <span><a routerLink="/project-dashboard">Project Dashboard</a></span>
+      </li>
+      <li nz-menu-item [appHideIfClaimsNotMet]="claimReq.globalUserOnly">
+        <nz-icon nzType="clock-circle"></nz-icon>
+        <span><a routerLink="/timeline">Timeline</a></span>
+      </li>
+      <li nz-menu-item [appHideIfClaimsNotMet]="claimReq.globalUserOnly">
+        <nz-icon nzType="search"></nz-icon>
+        <span><a routerLink="/search">Search Tasks</a></span>
+      </li>
+      <li nz-menu-item [appHideIfClaimsNotMet]="claimReq.globalUserOnly">
+        <nz-icon nzType="team"></nz-icon>
+        <span><a routerLink="/teams">Teams</a></span>
+      </li>
+      <li nz-menu-item>
+        <nz-icon nzType="setting"></nz-icon>
+        <span><a routerLink="/settings">Settings</a></span>
+      </li>
+    </ul>
+  </nz-sider>
+
+  <!-- Main Layout Content -->
+  <nz-layout>
+    <!-- Header -->
+    <nz-header class="header">
+      <div class="header-left">
+        <img src="assets/logo.png" alt="Logo" class="logo" />
+        <span class="title">Project Management</span>
+      </div>
+      <div class="header-content">
+        <div class="search-bar">
+          <input nz-input placeholder="Search..." />
+          <button nz-button nzType="default">
+            <nz-icon nzType="search"></nz-icon>
+          </button>
+        </div>
+       <!--<nz-switch [(ngModel)]="isDarkMode" (ngModelChange)="toggleTheme()">
+          <ng-template #checkedChildren>Dark</ng-template>
+          <ng-template #unCheckedChildren>Light</ng-template>
+        </nz-switch>
+        --> 
+        <button nz-button nzType="primary" [nzSize]="size" nzShape="round" (click)="onLogout()">
+          <nz-icon nzType="logout"></nz-icon>
+          Logout
+        </button>
+      </div>
+    </nz-header>
+
+    <!-- Content -->
+    <nz-content class="content">
+      <router-outlet></router-outlet>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

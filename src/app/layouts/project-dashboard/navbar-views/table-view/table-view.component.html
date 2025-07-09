@@ -1,0 +1,320 @@
+<!-- Filters -->
+<div
+  class="filter-bar"
+  style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px"
+>
+  <!-- Search and Filters -->
+  <input
+    nz-input
+    placeholder="Search by Title"
+    [(ngModel)]="searchValue"
+    (ngModelChange)="search()"
+    style="width: 200px"
+  />
+
+  <nz-select
+    nzMode="multiple"
+    nzAllowClear
+    nzShowSearch
+    [nzPlaceHolder]="'Filter by Status'"
+    [(ngModel)]="selectedStatusFilters"
+    (ngModelChange)="onStatusFilterChange($event)"
+    style="width: 200px"
+  >
+    <nz-option
+      *ngFor="let s of statusFilters"
+      [nzValue]="s.value"
+      [nzLabel]="s.text"
+    ></nz-option>
+  </nz-select>
+
+  <nz-select
+    nzMode="multiple"
+    nzAllowClear
+    nzShowSearch
+    [nzPlaceHolder]="'Filter by Priority'"
+    [(ngModel)]="selectedPriorityFilters"
+    (ngModelChange)="onPriorityFilterChange($event)"
+    style="width: 200px"
+  >
+    <nz-option
+      *ngFor="let p of priorityFilters"
+      [nzValue]="p.value"
+      [nzLabel]="p.text"
+    ></nz-option>
+  </nz-select>
+
+  <button nz-button nzType="default" (click)="reset()">Reset</button>
+  <button nz-button nzType="primary" (click)="exportToExcel()">
+    Export to Excel
+  </button>
+
+  <!-- Column Settings Dropdown -->
+  <nz-dropdown-menu class="columnMenu">
+    <a nz-dropdown>Column Settings</a>
+    <ul nz-menu>
+      <li nz-menu-item *ngFor="let col of columns">
+        <label>
+          <input type="checkbox" [(ngModel)]="col.visible" /> {{ col.label }}
+        </label>
+      </li>
+    </ul>
+  </nz-dropdown-menu>
+</div>
+
+<!-- Table -->
+<nz-table
+  [nzData]="pagedData"
+  [nzScroll]="{ x: 'max-content' }"
+  [nzBordered]="true"
+  [nzTableLayout]="'fixed'"
+  [nzShowPagination]="false"
+  [nzLoading]="loading"
+>
+  <thead>
+    <tr
+      cdkDropList
+      cdkDropListOrientation="horizontal"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <th style="width: 40px"></th>
+      <th
+        *ngFor="let column of columns"
+        cdkDrag
+        [cdkDragData]="column"
+        [hidden]="!column.visible"
+        style="cursor: move"
+      >
+        <div class="drag-header">{{ column.label }}</div>
+      </th>
+      <th style="width: 140px">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <ng-container *ngFor="let data of pagedData">
+      <tr>
+        <td
+          [nzExpand]="expandSet.has(data.id!)"
+          (nzExpandChange)="onExpandChange(data.id!, $event)"
+        ></td>
+
+        <ng-container *ngFor="let column of columns">
+          <td [hidden]="!column.visible">
+            <ng-container [ngSwitch]="column.key">
+              <ng-container *ngSwitchCase="'id'">{{ data.id }}</ng-container>
+
+              <!-- Title -->
+              <ng-container *ngSwitchCase="'title'">
+                <ng-container *ngIf="editingId !== data.id; else editTitle">
+                  {{ data.title }}
+                </ng-container>
+                <ng-template #editTitle>
+                  <input nz-input [(ngModel)]="data.title" />
+                </ng-template>
+              </ng-container>
+
+              <!-- Status -->
+              <ng-container *ngSwitchCase="'status'">
+                <ng-container *ngIf="editingId !== data.id; else editStatus">
+                  <nz-tag
+                    [nzColor]="
+                      {
+                        'To Do': 'blue',
+                        'Work In Progress': 'orange',
+                        'Under Review': 'gold',
+                        Completed: 'green'
+                      }[data.status]
+                    "
+                  >
+                    {{ data.status }}
+                  </nz-tag>
+                </ng-container>
+                <ng-template #editStatus>
+                  <nz-select [(ngModel)]="data.status" style="width: 150px">
+                    <nz-option
+                      *ngFor="let s of statusFilters"
+                      [nzValue]="s.value"
+                      [nzLabel]="s.text"
+                    ></nz-option>
+                  </nz-select>
+                </ng-template>
+              </ng-container>
+
+              <!-- Priority -->
+              <ng-container *ngSwitchCase="'priority'">
+                <ng-container *ngIf="editingId !== data.id; else editPriority">
+                  <nz-tag
+                    [nzColor]="
+                      {
+                        Low: 'default',
+                        Medium: 'cyan',
+                        High: 'volcano',
+                        Urgent: 'red'
+                      }[data.priority]
+                    "
+                  >
+                    {{ data.priority }}
+                  </nz-tag>
+                </ng-container>
+                <ng-template #editPriority>
+                  <nz-select [(ngModel)]="data.priority" style="width: 120px">
+                    <nz-option
+                      *ngFor="let p of priorityFilters"
+                      [nzValue]="p.value"
+                      [nzLabel]="p.text"
+                    ></nz-option>
+                  </nz-select>
+                </ng-template>
+              </ng-container>
+
+              <!-- Tags -->
+              <ng-container *ngSwitchCase="'tags'">
+                <ng-container *ngIf="editingId !== data.id; else editTags">
+                  <nz-tag
+                    *ngFor="let tag of data.tags?.split(',')"
+                    [nzColor]="'purple'"
+                  >
+                    {{ tag.trim() }}
+                  </nz-tag>
+                </ng-container>
+                <ng-template #editTags>
+                  <input
+                    nz-input
+                    [(ngModel)]="data.tags"
+                    placeholder="Comma-separated tags"
+                  />
+                </ng-template>
+              </ng-container>
+              <!-- Assigned To -->
+              <ng-container *ngSwitchCase="'assignee'">
+                <ng-container *ngIf="editingId !== data.id; else editAssignee">
+                  <nz-avatar
+                    class="assignee-avatar"
+                    [nzText]="getInitials(data.assignedFullName)"
+                    nzSize="small"
+                  ></nz-avatar>
+                  {{ data.assignedFullName }}
+                </ng-container>
+                <ng-template #editAssignee>
+                  <nz-select
+                    [(ngModel)]="data.assignedUserId"
+                    style="width: 180px"
+                    [nzShowSearch]="true"
+                    nzPlaceHolder="Select assignee"
+                  >
+                    <nz-option
+                      *ngFor="let user of userList"
+                      [nzValue]="user.id"
+                      [nzLabel]="user.fullName"
+                    ></nz-option>
+                  </nz-select>
+                </ng-template>
+              </ng-container>
+
+              <!-- Author (Read-only) -->
+              <ng-container *ngSwitchCase="'author'">
+                <nz-avatar
+                  class="author-avatar"
+                  [nzText]="getInitials(data.authorFullName)"
+                  nzSize="small"
+                ></nz-avatar>
+                {{ data.authorFullName }}
+              </ng-container>
+
+              <!-- Start Date -->
+              <ng-container *ngSwitchCase="'startDate'">
+                <ng-container *ngIf="editingId !== data.id; else editStartDate">
+                  {{ data.startDate | date : "mediumDate" }}
+                </ng-container>
+                <ng-template #editStartDate>
+                  <nz-date-picker
+                    [(ngModel)]="data.startDate"
+                    [nzFormat]="'dd-MM-yyyy'"
+                    style="width: 130px"
+                  ></nz-date-picker>
+                </ng-template>
+              </ng-container>
+
+              <!-- Due Date -->
+              <ng-container *ngSwitchCase="'dueDate'">
+                <ng-container *ngIf="editingId !== data.id; else editDueDate">
+                  {{ data.dueDate | date : "mediumDate" }}
+                </ng-container>
+                <ng-template #editDueDate>
+                  <nz-date-picker
+                    [(ngModel)]="data.dueDate"
+                    [nzFormat]="'dd-MM-yyyy'"
+                    style="width: 130px"
+                  ></nz-date-picker>
+                </ng-template>
+              </ng-container>
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <!-- ACTION BUTTONS COLUMN -->
+        <td>
+          <ng-container *ngIf="editingId !== data.id; else editButtons">
+            <button nz-button nzSize="small" (click)="startEdit(data.id!)">
+              <nz-icon nzType="edit" nzTheme="outline" />
+            </button>
+            <button
+              nz-button
+              nzSize="small"
+              nzDanger
+              (click)="deleteTask(data)"
+            >
+              <nz-icon nzType="delete" nzTheme="outline" />
+            </button>
+          </ng-container>
+
+          <ng-template #editButtons>
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="small"
+              [disabled]="!data.title.trim()"
+              (click)="saveEdit()"
+            >
+              Save
+            </button>
+            <button nz-button nzSize="small" (click)="cancelEdit()">
+              Cancel
+            </button>
+          </ng-template>
+        </td>
+      </tr>
+      <!-- Description Row -->
+      <tr *ngIf="expandSet.has(data.id!)">
+        <td [attr.colspan]="visibleColumnCount() + 2">
+          <strong>Description:</strong>
+          <ng-container *ngIf="editingId !== data.id; else editDescription">
+            {{ data.description }}
+          </ng-container>
+          <ng-template #editDescription>
+            <textarea
+              nz-input
+              [(ngModel)]="data.description"
+              rows="3"
+              placeholder="Enter description"
+              style="width: 100%; margin-top: 8px"
+            ></textarea>
+          </ng-template>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</nz-table>
+
+<nz-pagination
+  class="pagination"
+  [(nzPageIndex)]="pageIndex"
+  [(nzPageSize)]="pageSize"
+  [nzTotal]="total"
+  [nzShowSizeChanger]="true"
+  [nzPageSizeOptions]="[5, 10, 20, 50]"
+  [nzShowQuickJumper]="true"
+  (nzPageIndexChange)="onPageChange($event)"
+  (nzPageSizeChange)="onPageSizeChange($event)"
+></nz-pagination>

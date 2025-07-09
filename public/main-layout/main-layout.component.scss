@@ -1,0 +1,156 @@
+/*:root {
+    --background-color: #ffffff;   // Light mode background
+  --text-color: #222222;         // Light mode text
+  --search-bg: #f2f2f2;
+  --search-border: #d0d0d0;
+  --button-bg: #007bff;          // Primary blue button
+  --button-text: white;
+  --header-bg: #f8f9fa;          // Light mode header
+  --footer-bg: #f1f1f1;
+  }
+  
+  [data-theme="light"] {
+    --background-color: #ffffff;
+    --text-color: #222222;
+    --header-bg: #f8f9fa;
+  }
+
+  [data-theme="dark"] {
+    --background-color: #181818;   // Dark mode background
+  --text-color: #e0e0e0;         // Light text for dark mode
+  --search-bg: #333333;
+  --search-border: #555555;
+  --button-bg: #ff9800;          // Orange button for dark mode
+  --button-text: #181818;
+  --header-bg: #252525;          // Dark mode header
+  --footer-bg: #202020;
+  } */
+  
+  html, body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--background-color);
+  color: var(--text-color);
+  transition: background 0.3s ease, color 0.3s ease;
+  }
+  
+
+  /* Main Layout */
+  .full-layout {
+    height: 100vh;
+    display: flex;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    min-height: 100vh;
+    background: #001529;
+  }
+  
+  .sidebar ul[nz-menu] {
+    background: #001529; // Ensuring background remains dark
+  }
+  
+  .sidebar ul[nz-menu] li[nz-menu-item] {
+    color: white !important; // Ensures text is white
+  }
+  
+  .sidebar ul[nz-menu] li[nz-menu-item] a {
+    color: white !important; // Forces link text to be white
+    text-decoration: none; // Removes underline if any
+  }
+  
+  .sidebar ul[nz-menu] li[nz-menu-item]:hover {
+    background: #1890ff !important; // Highlight on hover
+  }
+  
+  .sidebar ul[nz-menu] li[nz-menu-item]:hover a {
+   color: #fff !important; // Keep text white on hover
+  }
+  
+  
+  .trigger {
+    color: white;
+    font-size: 18px;
+    line-height: 64px;
+    padding: 25px 25px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .trigger:hover {
+   color: #fff;
+   background-color:#1890ff;
+  }
+  
+  /* Content Layout */
+  .content-layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background: var(--header-bg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: 64px;
+  }
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .logo {
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .title {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  /* Search Bar */
+  .search-bar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    max-width: 1000px;
+  }
+  
+  .search-bar input {
+    width: 100%;
+    flex: 1;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+  }
+  
+  .search-bar button {
+    padding: 8px;
+    border-radius: 0 5px 5px 0;
+    background: #1890ff;
+    color: white;
+    border: none;
+  }
+  
+  /* Dark Mode Toggle */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  /* Content */
+  .content {
+    flex-grow: 1;
+    padding: 24px;
+    overflow-y: auto;
+  }

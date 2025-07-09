@@ -1,0 +1,59 @@
+.filter-bar {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  
+    input,
+    nz-select {
+      width: 200px;
+    }
+  }
+  
+  .author-avatar {
+    background: #52c41a;
+    font-weight: 600;
+    color: white;
+  }
+
+  .assignee-avatar {
+    background: #1890ff;
+    font-weight: 600;
+    color: white;
+  }
+
+  ::ng-deep .cdk-drag-preview {
+    display: inline-block;
+    background: #fff;
+    border: 1px dashed #1890ff;
+    padding: 4px 12px;
+    min-width: 80px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-weight: 600;
+    color: #000;
+    border-radius: 4px;
+    z-index: 1000;
+  }
+  
+  ::ng-deep .cdk-drag-placeholder {
+    opacity: 0;
+    border: 2px dashed #1890ff;
+  }
+  
+  ::ng-deep .drag-header {
+    padding: 8px;
+    background-color: #f5f5f5;
+    text-align: center;
+  }
+  
+  
+  ::ng-deep .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+    margin-bottom: 32px;
+  }

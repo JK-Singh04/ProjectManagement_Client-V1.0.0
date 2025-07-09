@@ -1,0 +1,182 @@
+<ul nz-menu nzTheme="dark" nzMode="inline">
+  <!-- Profile Section -->
+  <div
+    class="profile-section"
+    *ngIf="!isCollapsed"
+    (click)="openUserProfile()"
+  >
+<nz-avatar
+  [nzSrc]="avatarUrl || undefined"
+  nzIcon="user"
+  nzSize="large"
+  style="background-color: #03c003"
+></nz-avatar>
+
+    <div class="user-info">
+      <div class="fullname">{{ fullName }}</div>
+      <div class="email">{{ email }}</div>
+    </div>
+  </div>
+
+  <!-- Collapsed Avatar -->
+  <div
+    class="profile-section-collapsed"
+    *ngIf="isCollapsed"
+    (click)="openUserProfile()"
+  >
+<nz-avatar
+  [nzSrc]="avatarUrl || undefined"
+  nzIcon="user"
+  nzSize="default"
+  style="background-color: #03c003; margin-left: 16px"
+></nz-avatar>
+
+  </div>
+
+  <nz-divider style="margin: 0"></nz-divider>
+
+  <!-- Static Menu Items -->
+  <li nz-menu-item routerLink="/project-dashboard">
+    <nz-icon nzType="bar-chart"></nz-icon>
+    <span *ngIf="!isCollapsed">Project Dashboard</span>
+  </li>
+
+  <li
+    nz-menu-item
+    routerLink="/timeline"
+    [appHideIfClaimsNotMet]="claimReq.globalUserOnly"
+  >
+    <nz-icon nzType="clock-circle"></nz-icon>
+    <span *ngIf="!isCollapsed">Timeline</span>
+  </li>
+
+  <!-- 
+  <li
+    nz-menu-item
+    routerLink="/search"
+    [appHideIfClaimsNotMet]="claimReq.globalUserOnly"
+  >
+    <nz-icon nzType="search"></nz-icon>
+    <span *ngIf="!isCollapsed">Search Tasks</span>
+  </li> -->
+
+  <li
+    nz-menu-item
+    routerLink="/users"
+    [appHideIfClaimsNotMet]="claimReq.globalUserOnly"
+  >
+    <nz-icon nzType="team"></nz-icon>
+    <span *ngIf="!isCollapsed">Team Info</span>
+  </li>
+
+  <li
+    nz-menu-item
+    routerLink="/teams"
+    [appHideIfClaimsNotMet]="claimReq.globalUserOnly"
+  >
+    <nz-icon nzType="usergroup-add"></nz-icon>
+    <span *ngIf="!isCollapsed">Team Building</span>
+  </li>
+  <!-- Team Submenu 
+<nz-divider></nz-divider>
+<li nz-submenu nzIcon="team" nzTitle="Teams" *ngIf="teams$ | async as teams">
+  <ul>
+    <li *ngIf="teams.length === 0" nz-menu-item disabled>
+      <span *ngIf="!isCollapsed">No teams found</span>
+    </li>
+    <li
+      nz-menu-item
+      *ngFor="let team of teams"
+      [class.active-project]="team.name === selectedTeamName"
+      (click)="switchTeam(team.name)"
+    >
+      <div class="project-item-wrapper">
+        <div class="project-info">
+          <nz-avatar
+            [nzText]="team.name[0]"
+            nzSize="small"
+            class="project-avatar"
+            [style.marginLeft.px]="isCollapsed ? 2 : 0"
+          ></nz-avatar>
+          <span *ngIf="!isCollapsed">{{ team.name }}</span>
+        </div>
+
+        //Ellipsis Menu
+        <button
+          nz-button
+          nz-dropdown
+          [nzDropdownMenu]="teamEllipsisMenu"
+          nzPlacement="bottomRight"
+          nzType="text"
+          nzSize="small"
+          nzTrigger="click"
+          (click)="stopEvent($event)"
+          class="ellipsis-btn"
+          *ngIf="!isCollapsed"
+        >
+          <nz-icon nzType="ellipsis"></nz-icon>
+        </button>
+
+        <nz-dropdown-menu #teamEllipsisMenu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="updateTeam(team)">Update</li>
+            <li nz-menu-item (click)="deleteTeam(team)">Delete</li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
+    </li>
+  </ul>
+</li>  
+-->
+
+<!-- Projects Submenu -->
+<nz-divider></nz-divider>
+<li nz-submenu nzIcon="bars" nzTitle="Projects" *ngIf="projects$ | async as projects">
+  <ul>
+    <li *ngIf="projects.length === 0" nz-menu-item disabled>
+      <span *ngIf="!isCollapsed">No projects found</span>
+    </li>
+<li
+  nz-menu-item
+  *ngFor="let project of projects"
+  [class.active-project]="project.name === selectedProjectName"
+  (click)="switchProject(project.name)"
+>
+  <div class="project-item-wrapper">
+    <!-- Project Avatar + Name -->
+    <div class="project-info">
+      <nz-avatar
+        [nzText]="project.name[0]"
+        nzSize="small"
+        class="project-avatar"
+        [style.marginLeft.px]="isCollapsed ? 2 : 0"
+      ></nz-avatar>
+      <span *ngIf="!isCollapsed">{{ project.name }}</span>
+    </div>
+
+    <!-- Ellipsis Menu -->
+    <button
+      nz-button
+      nz-dropdown
+      [nzDropdownMenu]="ellipsisMenu"
+      nzPlacement="bottomRight"
+      nzType="text"
+      nzSize="small"
+      nzTrigger="click"
+      (click)="stopEvent($event)"
+      class="ellipsis-btn"
+      *ngIf="!isCollapsed"
+    >
+      <nz-icon nzType="ellipsis"></nz-icon>
+    </button>
+
+    <!-- Shared Dropdown Menu Template specific to each project -->
+    <nz-dropdown-menu #ellipsisMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="updateProject(project)">Update</li>
+        <li nz-menu-item (click)="deleteProject(project)">Delete</li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+</li>
+</ul>

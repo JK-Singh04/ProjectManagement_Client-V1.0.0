@@ -1,0 +1,77 @@
+<form [formGroup]="inviteForm" (ngSubmit)="submitForm()" nz-form [nzLayout]="'vertical'">
+  <h3>Add people to {{ inviteForm.value.project || 'your project' }}</h3>
+
+  <!-- Email Input -->
+  <nz-form-item>
+    <nz-form-label [nzRequired]="true" nzFor="emails">Emails</nz-form-label>
+    <nz-form-control [nzErrorTip]="'Enter one or more valid email addresses'">
+      <nz-select
+        formControlName="emails"
+        nzMode="tags"
+        nzPlaceHolder="Enter one or more emails"
+        [nzOpen]="false"
+      >
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- OR Add from -->
+  <div class="or-add-from">
+    <span>or add from</span>
+    <div class="providers">
+      <button nz-button nzType="default" (click)="inviteFrom('Google')">
+        <i nz-icon nzType="google"></i> Google
+      </button>
+      <button nz-button nzType="default" (click)="inviteFrom('Slack')">
+        <i nz-icon nzType="slack"></i> Slack
+      </button>
+      <button nz-button nzType="default" (click)="inviteFrom('Microsoft')">
+        <i nz-icon nzType="windows"></i> Microsoft
+      </button>
+    </div>
+  </div>
+
+  <!-- Team Select -->
+<nz-form-item>
+  <nz-form-label nzFor="team">Select a team</nz-form-label>
+  <nz-form-control>
+    <nz-select formControlName="team" nzPlaceHolder="Select a team">
+      <nz-option *ngFor="let team of teamList" [nzValue]="team.id" [nzLabel]="team.name"></nz-option>
+    </nz-select>
+  </nz-form-control>
+</nz-form-item>
+
+  <!-- Project Select -->
+  <nz-form-item>
+    <nz-form-label nzFor="project">Select project</nz-form-label>
+    <nz-form-control>
+      <nz-select formControlName="project">
+        <nz-option *ngFor="let proj of projectList" [nzValue]="proj" [nzLabel]="proj"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Role Select -->
+  <nz-form-item>
+    <nz-form-label nzFor="role">Select a project role</nz-form-label>
+    <nz-form-control>
+      <nz-select formControlName="role">
+        <nz-option *ngFor="let role of projectRoles" [nzValue]="role" [nzLabel]="role"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <!-- Footer Actions -->
+  <div class="form-actions">
+    <button nz-button nzType="default" (click)="cancel()">Cancel</button>
+    <button
+      nz-button
+      nzType="primary"
+      [nzLoading]="isSubmitting"
+      [disabled]="!inviteForm.valid || isSubmitting"
+      type="submit"
+    >
+      Send Invite
+    </button>
+  </div>
+</form>

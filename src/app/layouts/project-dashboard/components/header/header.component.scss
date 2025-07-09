@@ -1,0 +1,56 @@
+:host ::ng-deep .search-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Search Bar */
+.search-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  max-width: 1000px;
+}
+
+.search-bar input {
+  width: 100%;
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+}
+
+.search-bar button {
+  padding: 8px;
+  border-radius: 0 5px 5px 0;
+  background: #1890ff;
+  color: white;
+  border: none;
+}
+
+/* Dark Mode Toggle */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+nz-page-header {
+  background: var(--header-bg, #fff);
+  padding: 12px 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-project-btn {
+  margin-left: 16px;
+  background-color: #1890ff;
+  color: white;
+}
+
+nz-tag[nzColor="orange"] {
+  font-size: 11px;
+  border-radius: 4px;
+}
+nz-tag[nzColor="green"] {
+  font-size: 11px;
+  border-radius: 4px;
+}

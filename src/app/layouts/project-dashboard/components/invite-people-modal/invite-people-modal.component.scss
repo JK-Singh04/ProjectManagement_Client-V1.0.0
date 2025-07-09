@@ -1,0 +1,29 @@
+.or-add-from {
+  margin: 12px 0;
+  span {
+    display: block;
+    margin-bottom: 6px;
+    color: #888;
+    font-size: 12px;
+  }
+  .providers {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  gap: 12px;
+}
+
+::ng-deep .ant-form-item-explain-error {
+  margin-left: 0 !important;
+}
+
+::ng-deep .ant-form-item {
+  margin-bottom: 16px;
+}

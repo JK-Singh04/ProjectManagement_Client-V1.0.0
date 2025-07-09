@@ -1,0 +1,77 @@
+  <h2 class="text-success">Login</h2>
+  <div>
+    Don't have an account?
+    <a routerLink="/signup" class="text-decoration-none fw-medium text-success d-inline-block">Sign up</a>
+  </div>
+
+<form nz-form [formGroup]="form" (ngSubmit)="onSubmit()" >
+
+  <!-- EMAIL FIELD -->
+  <nz-form-item>
+    <nz-form-control
+      nzHasFeedback
+      [nzValidateStatus]="form.controls.email"
+      [nzErrorTip]="emailErrorTpl"
+    >
+    <div class="input-4">
+      <input
+        type="email"
+        nz-input
+        placeholder=" "
+        class="form-control"
+        formControlName="email"
+        required
+      />
+      <span class="material-symbols-outlined">mail</span>
+      <label>Email address</label>
+    </div>   
+    </nz-form-control>
+  </nz-form-item>
+  <ng-template #emailErrorTpl>
+    <ng-container *ngIf="form.controls.email.hasError('required')">Email is required.</ng-container>
+    <ng-container *ngIf="form.controls.email.hasError('email')">Enter a valid email.</ng-container>
+  </ng-template>
+
+ <!-- PASSWORD FIELD -->
+ <nz-form-item>
+  <nz-form-control
+    nzHasFeedback
+    [nzValidateStatus]="form.controls.password"
+    [nzErrorTip]="passwordErrorTpl"
+  >
+    <div class="input-4">
+      <!-- Password input -->
+      <input
+        [type]="passwordVisible ? 'text' : 'password'"
+        nz-input
+        placeholder=" "
+        class="form-control"
+        formControlName="password"
+        required
+      />
+       <!-- Lock icon (left) -->
+      <span class="material-symbols-outlined">lock</span>
+      <label>Password</label>
+      <!-- Eye icon (moved outside feedback area) -->
+      <span
+        class="material-symbols-outlined clickable-icon"
+        (click)="passwordVisible = !passwordVisible"
+      >
+        {{ passwordVisible ? 'visibility_off' : 'visibility' }}
+      </span>
+
+    </div>
+  </nz-form-control>
+</nz-form-item>
+  <ng-template #passwordErrorTpl>
+    <ng-container *ngIf="form.controls.password.hasError('required')">Password is required.</ng-container>
+  </ng-template>
+
+  <!-- SUBMIT BUTTON -->
+  <div class="mt-2">
+    <button type="submit" class="btn btn-success w-100 rounded-3">Login</button>
+  </div>
+</form>
+
+
+

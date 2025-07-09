@@ -1,0 +1,42 @@
+<nz-layout
+  class="full-layout"
+  [appHideIfClaimsNotMet]="claimReq.globalUserOnly"
+>
+  <!-- Sidebar -->
+  <nz-sider
+    nzCollapsible
+    [(nzCollapsed)]="isCollapsed"
+    class="sidebar"
+    [nzTrigger]="null"
+  >
+    <app-sidebar [isCollapsed]="isCollapsed"></app-sidebar>
+
+    <!-- SINGLE TOGGLE ICON -->
+    <span
+      class="trigger"
+      nz-icon
+      [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+      (click)="toggleSidebar()"
+    ></span>
+  </nz-sider>
+
+  <!-- Content -->
+  <nz-layout class="content-layout">
+    <app-header
+      [isDarkMode]="isDarkMode"
+      (toggleTheme)="toggleTheme()"
+      (logout)="onLogout()"
+      (projectChange)="onProjectSwitched($event)"
+    />
+    <app-navbar
+    (viewChange)="onViewChange($event)"
+  ></app-navbar>
+  
+    <nz-content class="content">
+      <app-kanban-view *ngIf="selectedView === 'kanban'"></app-kanban-view>
+      <app-list-view *ngIf="selectedView === 'list'"></app-list-view>
+      <app-timeline-view *ngIf="selectedView === 'timeline'"></app-timeline-view>
+      <app-table-view *ngIf="selectedView === 'table'"></app-table-view>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

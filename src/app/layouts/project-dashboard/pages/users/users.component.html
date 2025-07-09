@@ -1,0 +1,298 @@
+<nz-layout
+  class="full-layout"
+  [appHideIfClaimsNotMet]="claimReq.globalUserOnly"
+>
+  <!-- Sidebar -->
+  <nz-sider
+    nzCollapsible
+    [(nzCollapsed)]="isCollapsed"
+    class="sidebar"
+    [nzTrigger]="null"
+  >
+    <app-sidebar [isCollapsed]="isCollapsed"></app-sidebar>
+    <span
+      class="trigger"
+      nz-icon
+      [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+      (click)="toggleSidebar()"
+    ></span>
+  </nz-sider>
+
+  <!-- Main Layout -->
+  <nz-layout class="content-layout">
+    <app-header
+      [isDarkMode]="isDarkMode"
+      (toggleTheme)="toggleTheme()"
+      (logout)="onLogout()"
+    />
+
+    <div class="content">
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <input
+          nz-input
+          placeholder="Search teams..."
+          [(ngModel)]="searchValue"
+          (ngModelChange)="search()"
+        />
+
+        <nz-select
+          [nzMode]="'multiple'"
+          nzPlaceHolder="Privacy"
+          [(ngModel)]="selectedPrivacyFilters"
+          (ngModelChange)="onPrivacyFilterChange($event)"
+        >
+          <nz-option
+            *ngFor="let filter of privacyFilters"
+            [nzValue]="filter.value"
+            [nzLabel]="filter.text"
+          ></nz-option>
+        </nz-select>
+
+        <nz-select
+          [nzMode]="'multiple'"
+          nzPlaceHolder="Product Managers"
+          [(ngModel)]="selectedManagerFilters"
+          (ngModelChange)="onManagerFilterChange($event)"
+        >
+          <nz-option
+            *ngFor="let id of objectKeys(allUsers)"
+            [nzValue]="id"
+            [nzLabel]="allUsers[id]"
+          ></nz-option>
+        </nz-select>
+
+        <!--  NOT NEEDED ----
+        <nz-select
+          [nzMode]="'multiple'"
+          nzPlaceHolder="Team Member Roles"
+          [(ngModel)]="selectedRoleFilters"
+          (ngModelChange)="onRoleFilterChange($event)"
+        >
+          <nz-option
+            *ngFor="let role of ['Admin', 'Member', 'Manager']"
+            [nzValue]="role"
+            [nzLabel]="role"
+          ></nz-option>
+        </nz-select> -->
+
+        <nz-button-group>
+          <button
+            nz-button
+            [nzType]="selectedLayout === 'table' ? 'primary' : 'default'"
+            (click)="onLayoutChange('table')"
+          >
+            <i nz-icon nzType="unordered-list"></i>
+          </button>
+          <button
+            nz-button
+            [nzType]="selectedLayout === 'grid' ? 'primary' : 'default'"
+            (click)="onLayoutChange('grid')"
+          >
+            <i nz-icon nzType="appstore"></i>
+          </button>
+        </nz-button-group>
+
+        <button nz-button nzType="default" (click)="reset()">Reset</button>
+      </div>
+
+      <!-- Table View -->
+      <nz-table
+        *ngIf="selectedLayout === 'table'"
+        [nzData]="pagedTeams"
+        [nzLoading]="loading"
+        [nzShowPagination]="false"
+        [nzSize]="'middle'"
+        [nzBordered]="true"
+        class="team-table"
+      >
+        <thead>
+          <tr>
+            <th>Team Name</th>
+            <th>Privacy</th>
+            <th>Product Manager</th>
+            <th>Created By</th>
+            <th>Members</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let team of pagedTeams">
+            <td>
+              <strong>{{ team.teamName }}</strong>
+              <nz-badge
+                [nzCount]="team.members?.length"
+                [nzStyle]="{ backgroundColor: '#52c41a' }"
+              ></nz-badge>
+            </td>
+
+            <td>
+              <nz-tag [nzColor]="team.isPrivate ? 'volcano' : 'green'">
+                {{ team.isPrivate ? "Private" : "Public" }}
+              </nz-tag>
+            </td>
+
+            <td>
+              <div class="avatar-cell">
+                <nz-avatar
+                  [nzText]="getManagerName(team) | slice : 0 : 1"
+                  [nzSize]="32"
+                  nzShape="circle"
+                  nz-tooltip="{{ getManagerName(team) }}"
+                  style="background-color: orange"
+                ></nz-avatar>
+                <span class="avatar-name">{{ getManagerName(team) }}</span>
+              </div>
+            </td>
+
+            <td>
+              <div class="avatar-cell">
+                <nz-avatar
+                  [nzText]="getOwnerName(team) | slice : 0 : 1"
+                  [nzSize]="32"
+                  nzShape="square"
+                  nz-tooltip="{{ getOwnerName(team) }}"
+                  style="background-color: #1890ff"
+                ></nz-avatar>
+                <span class="avatar-name">{{ getOwnerName(team) }}</span>
+              </div>
+            </td>
+
+            <td>
+              <div class="member-avatars">
+                <ng-container
+                  *ngFor="let m of (team.members ?? []).slice(0, 5)"
+                >
+                  <nz-avatar
+                    [nzText]="m.userName?.[0] || '?'"
+                    [nzSize]="28"
+                    nz-tooltip="{{ m.userName }}"
+                    style="background-color: #7265e6"
+                  ></nz-avatar>
+                </ng-container>
+                <span
+                  *ngIf="(team.members?.length || 0) > 5"
+                  class="extra-count"
+                >
+                  +{{ (team.members?.length || 0) - 5 }}
+                </span>
+              </div>
+            </td>
+
+            <td>
+              <!--   <button nz-button nzSize="small" (click)="viewTeam(team)">
+              View
+            </button>  -->
+              <button
+                nz-button
+                nzType="default"
+                nzSize="small"
+                (click)="editTeam(team)"
+              >
+                Edit
+              </button>
+              <button
+                nz-button
+                nzType="primary"
+                nzDanger
+                nzSize="small"
+                (click)="deleteTeam(team)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+
+      <!-- Grid View -->
+      <div *ngIf="selectedLayout === 'grid'" class="team-cards">
+        <nz-card
+          *ngFor="let team of pagedTeams"
+          [nzTitle]="team.teamName"
+          [nzBordered]="true"
+          class="team-card"
+        >
+          <p>
+            <strong>Privacy:</strong>
+            <nz-tag [nzColor]="team.isPrivate ? 'volcano' : 'green'">
+              {{ team.isPrivate ? "Private" : "Public" }}
+            </nz-tag>
+          </p>
+
+          <p>
+            <strong>Manager:</strong>
+            <nz-avatar
+              [nzText]="getManagerName(team) | slice : 0 : 1"
+              nz-tooltip="{{ getManagerName(team) }}"
+              style="background-color: orange"
+            ></nz-avatar>
+            <span class="avatar-name">{{ getManagerName(team) }}</span>
+          </p>
+
+          <p>
+            <strong>Created By:</strong>
+            <nz-avatar
+              [nzText]="getOwnerName(team) | slice : 0 : 1"
+              nz-tooltip="{{ getOwnerName(team) }}"
+              style="background-color: #1890ff"
+            ></nz-avatar>
+            <span class="avatar-name">{{ getOwnerName(team) }}</span>
+          </p>
+
+          <div>
+            <strong>Members:</strong>
+            <div class="member-avatars">
+              <ng-container *ngFor="let m of (team.members || []).slice(0, 5)">
+                <nz-avatar
+                  [nzText]="m.userName?.[0] || '?'"
+                  nz-tooltip="{{ m.userName }}"
+                  style="background-color: #7265e6"
+                ></nz-avatar>
+              </ng-container>
+              <span *ngIf="(team.members?.length || 0) > 5" class="extra-count">
+                +{{ (team.members?.length || 0) - 5 }}
+              </span>
+            </div>
+          </div>
+
+          <div class="grid-actions">
+            <!--   <button nz-button nzSize="small" (click)="viewTeam(team)">
+              View
+            </button>  -->
+            <button
+              nz-button
+              nzType="default"
+              nzSize="small"
+              (click)="editTeam(team)"
+            >
+              Edit
+            </button>
+            <button
+              nz-button
+              nzType="primary"
+              nzDanger
+              nzSize="small"
+              (click)="deleteTeam(team)"
+            >
+              Delete
+            </button>
+          </div>
+        </nz-card>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <nz-pagination
+          [(nzPageIndex)]="pageIndex"
+          [(nzPageSize)]="pageSize"
+          [nzTotal]="total"
+          (nzPageIndexChange)="onPageChange($event)"
+          (nzPageSizeChange)="onPageSizeChange($event)"
+          [nzShowSizeChanger]="true"
+          [nzPageSizeOptions]="[10, 20, 50]"
+        ></nz-pagination>
+      </div>
+    </div>
+  </nz-layout>
+</nz-layout>
